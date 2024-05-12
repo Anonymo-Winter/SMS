@@ -8,21 +8,15 @@
                                 Dashboard
                             </a>
                             <div class="sb-sidenav-menu-heading">Manage Students</div>
-                            <a class="nav-link" href="viewStudents.php">
-                                <div class="sb-nav-link-icon"><i class="fas fa-user"></i></div>
-                                View Students
-                            </a>          
-                            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePages" aria-expanded="false" aria-controls="collapsePages">
+                            <a class="nav-link collapsed" href="takeAttendance.php" data-bs-toggle="collapse" data-bs-target="#collapsePages" aria-expanded="false" aria-controls="collapsePages">
                                 <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
-                                Manage Attendance
-                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                            </a>
-                            <div class="collapse" id="collapsePages" aria-labelledby="headingTwo" data-bs-parent="#sidenavAccordion">
-                                <a class="nav-link" href="takeAttendance.php">
-                                <div class="sb-nav-link-icon"><i class="fas fa-book"></i></div>
                                 Take Attendance
                             </a>
-                            </div>
+                            <a class="nav-link" href="viewStudents.php">
+                                <div class="sb-nav-link-icon"><i class="fas fa-user"></i></div>
+                                View Class Attendance
+                            </a>          
+                            
                             <div class="sb-sidenav-menu-heading">Addons</div>
                             <a class="nav-link" href="charts.html">
                                 <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
@@ -36,7 +30,7 @@
                     </div>
                     <div class="sb-sidenav-footer">
                         <div class="small">Logged in as:</div>
-                        Start Bootstrap
+                        <?php if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"]) echo $_SESSION["username"]?>
                     </div>
                 </nav>
             </div>

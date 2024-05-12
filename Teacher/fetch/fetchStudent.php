@@ -4,13 +4,14 @@
         if(isset($_GET["action"]) && isset($_POST["sclass"]))
         {
             $action = htmlspecialchars($_GET["action"]);
-            $sql = "select * from $action where Sclass='{$_POST["sclass"]}'";
+            $sql = "select * from $action where Sclass='{$_POST["sclass"]}' order by Srollno";
             $result = mysqli_query($conn,$sql);
             if($result){
                 $data = array();
                 while($row = $result->fetch_assoc()){
                     $data[] = $row; 
                 }
+                // echo $data;
                 echo json_encode($data);
             }
             else 

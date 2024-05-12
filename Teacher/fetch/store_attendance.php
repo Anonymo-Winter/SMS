@@ -23,23 +23,26 @@
             }
         }
 
+        if(count($ids) > 0){
         // Update attendance for selected students to 'present = 1'
-        $update_query = "UPDATE `attendance` SET `status`=? WHERE `Sid`=? and attendance_date=?";
-        $stmt = $conn->prepare($update_query);
-        $stmt->bind_param("iss", $check, $sid,$date);
-        $good = false;
-        for($i = 0; $i < $N; $i++) {
-            $check = in_array($sids[$i], $ids) ? 1 : 0; // Check if the student ID is in the array of selected IDs
-            $sid = $sids[$i];
-            if($stmt->execute()) {
-                $good = true;
-            } 
-            if($good)
+            $update_query = "UPDATE `attendance` SET `status`=? WHERE `Sid`=? and attendance_date=?";
+            $stmt = $conn->prepare($update_query);
+            $stmt->bind_param("iss", $check, $sid,$date);
+            $good = false;
+            for($i = 0; $i < $N; $i++) {
+                $check = in_array($sids[$i], $ids) ? 1 : 0;
+                $sid = $sids[$i];
+                if(!$stmt->execute()) {
+                    $good = true;
+                    break;
+                }
+            }
+            if(!$good)
             {
-                echo "success";
+                echo 1;
             }
             else{
-                echo "errror";
+                echo 0;
             }
         }
     } else {

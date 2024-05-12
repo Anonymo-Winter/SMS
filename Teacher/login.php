@@ -243,6 +243,7 @@
                     },
                     success:function(data)
                     {
+                        alert(data);
                         if(data == 1)
                         {
                             window.location.href = "./index.php";

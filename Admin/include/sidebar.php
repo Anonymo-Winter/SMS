@@ -30,7 +30,7 @@
                 </div>
                 <div class="sb-sidenav-footer">
                     <div class="small">Logged in as:</div>
-                    Anonymo
+                    <?php if(isset($_SESSION["username"])) echo htmlspecialchars($_SESSION["username"]);?>
                 </div>
             </nav>
         </div>

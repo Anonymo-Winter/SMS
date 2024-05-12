@@ -1,3 +1,16 @@
+<?php 
+    session_start();
+    if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
+        header("location: login.php");
+        exit;
+    }
+    require_once './include/config.php';
+    if(!$conn)
+    {
+        header("location: ./index.html");
+    }
+    else{
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -27,9 +40,28 @@
 <body class="sb-nav-fixed">
     <!-- navbar -->
     <?php  include "./include/nav.php" ?>
+
+    <?php 
+            $students = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(*) as total_students FROM STUDENTS"));
+            $students = $students["total_students"];
+
+            $teachers = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(*) as total_teachers FROM teachers"));
+            $teachers = $teachers["total_teachers"];
+
+            $classes = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(*) as total_classes FROM CLASSES"));
+            $classes = $classes["total_classes"];
+
+            $classe_cr = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(*) as total_crs FROM CLASS_CRS"));
+            $classe_cr = $classe_cr["total_crs"];
+            
+
+    ?>
+
     <!-- sidebar -->
     <div id="layoutSidenav" class="sb-sidenav-toggled">
+
         <?php  include "./include/sidebar.php" ?> 
+
         <div id="layoutSidenav_content">
             <main class="container p-4 font-monospace">
                 <div class="row-md-4 d-flex justify-content-between">
@@ -46,7 +78,7 @@
                             <div class="row no-gutters align-items-center">
                                 <div class="col mr-2">
                                     <div class="text-xs text-muted font-weight-bold text-uppercase text-muted mb-1">Students</div>
-                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">16</div>
+                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800"><?php echo $students?></div>
                                 </div>
                                 <div class="col-auto">
                                     <i class="fas fa-users fa-2x text-info"></i>
@@ -62,7 +94,7 @@
                         <div class="row align-items-center">
                             <div class="col mr-2">
                                 <div class="text-xs font-weight-bold text-uppercase text-muted mb-1">Classes</div>
-                                <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">3</div>
+                                <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800"><?php echo $classes ?></div>
                             </div>
                             <div class="col-auto">
                                 <i class="fas fa-chalkboard fa-2x text-primary"></i>
@@ -75,15 +107,15 @@
                 <div class="col-xl-3 col-md-6 mb-4">
                     <div class="card p-2 shadow border  border-secondary-subtle shadow border">
                         <div class="card-body">
-                        <div class="row no-gutters align-items-center">
-                            <div class="col mr-2">
-                                <div class="text-xs font-weight-bold text-uppercase text-muted mb-1">Class Arms</div>
-                                <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">4</div>
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-uppercase text-muted mb-1">Class Arms</div>
+                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800"><?php echo $classe_cr ?></div>
+                                </div>
+                                <div class="col-auto">
+                                <i class="fas fa-code-branch fa-2x text-success"></i>
+                                </div>
                             </div>
-                            <div class="col-auto">
-                            <i class="fas fa-code-branch fa-2x text-success"></i>
-                            </div>
-                        </div>
                         </div>
                     </div>
                 </div>
@@ -93,7 +125,7 @@
                         <div class="row align-items-center">
                             <div class="col mr-2">
                                 <div class="text-xs font-weight-bold text-uppercase text-muted mb-1">Subjects</div>
-                                <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">3</div>
+                                <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">12300</div>
                             </div>
                             <div class="col-auto">
                                 <i class="fas fa-chalkboard fa-2x text-danger"></i>
@@ -133,3 +165,6 @@
 </body>
 </html>
 </script>
+<?php 
+    }
+?>

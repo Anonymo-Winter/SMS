@@ -1,5 +1,15 @@
 <?php 
+    session_start();
+    if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
+        header("location: login.php");
+        exit;
+    }
     require_once './include/config.php';
+    if(!$conn)
+    {
+        header("location: ./index.html");
+    }
+    else{
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -387,7 +397,8 @@
                     var tableHTML = "<table id='dataTable' class='display table table-bordered'><thead class='table-dark'><th class='text-center'>#</th><th class='text-center'>Teacher Name</th><th class='text-center'>Class</th><th class='text-center'>Course</th><th>CR Id</th><th>Date</th><th class='text-center'>Edit</th><th class='text-center'>Delete</th></thead><tbody class='text-center'>";
                     data.forEach(function(row) {
                         tableHTML += "<tr>";
-                        tableHTML += "<td class='text-center'>" + row.id + "</td>";
+                        tableHTML += "<td class='text-center sino'></td>"; 
+                        // tableHTML += "<td class='text-center'>" + row.id + "</td>";
                         tableHTML += "<td>" + row.tname + "</td>";
                         tableHTML += "<td>" + row.Sclass + "</td>";
                         tableHTML += "<td>" + row.Course_id + "</td>";
@@ -400,6 +411,18 @@
                     tableHTML += "</tbody></table>";
                     $("#mytable").html(tableHTML);
                     $("#dataTable").DataTable({
+                        // serial number logic starts
+                        "columnDefs":[{
+                            "searchable":false,
+                            "orderable":false,
+                            "targets":0
+                        }],
+                        "order":[[1,'asc']],
+                        "createdRow": function(row, data, dataIndex){
+                            $(row).find('td:eq(0)').text(dataIndex + 1); // Set serial number
+                            $(row).find('td:eq(0)').addClass("sino"); // Add class for styling
+                        },
+                        //serial number login ends
                         responsive:true,
                         autoWidth:true,
                         pagingType: 'simple_numbers',
@@ -423,3 +446,4 @@
 </script>
 </body>
 </html>
+<?php } ?>
