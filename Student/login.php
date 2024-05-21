@@ -1,6 +1,6 @@
 <?php 
     session_start();
-    if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true && $_SESSION["role"] == "admin"){
+    if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
         header("location: ./index.php");
         exit;
     }
@@ -17,8 +17,10 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <title>Login Panel</title>
-    <?php include './include/linker.php' ?>
+    <title>Admin Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" ></script>
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
     <style>
         .form-control:active,
         .form-control:focus{
@@ -28,6 +30,75 @@
         body{
             background-image: url('anime.jpg');
             background-repeat: no-repeat;
+            /* background-size: cover; */
+        }
+        .radio-tile-group {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        }
+
+        .radio-tile-group .input-container {
+        position: relative;
+        height: 70px;
+        width: 70px;
+        margin: 0.5rem;
+        }
+
+        .radio-tile-group .input-container .radio-button {
+        opacity: 0;
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        margin: 0;
+        cursor: pointer;
+        }
+
+        .radio-tile-group .input-container .radio-tile {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+        border: 2px solid #079ad9;
+        border-radius: 5px;
+        padding: 1rem;
+        transition: transform 300ms ease;
+        }
+
+        .radio-tile-group .input-container .icon svg {
+        fill: #079ad9;
+        width: 2rem;
+        height: 2rem;
+        }
+
+        .radio-tile-group .input-container .radio-tile-label {
+        text-align: center;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: #079ad9;
+        }
+
+        .radio-tile-group .input-container .radio-button:checked + .radio-tile {
+        background-color: #079ad9;
+        border: 2px solid #079ad9;
+        color: white;
+        transform: scale(1.05, 1.05);
+        }
+
+        .radio-tile-group .input-container .radio-button:checked + .radio-tile .icon svg {
+        fill: white;
+        background-color: #079ad9;
+        }
+
+        .radio-tile-group .input-container .radio-button:checked + .radio-tile .radio-tile-label {
+        color: white;
+        background-color: #079ad9;
         }
     </style>
 </head>
@@ -88,17 +159,9 @@
                 
             </form>
     </div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 <script>
     $(document).ready(function(){
-        // $('input[type=radio][name=role]').change(function() {
-        //     if (this.value === 'teacher') {
-        //     $('#teacherForm').show();
-        //     $('#studentForm').hide();
-        //     } else if (this.value === 'student') {
-        //     $('#studentForm').show();
-        //     $('#teacherForm').hide();
-        //     }
-        // }); 
         $("#uname").focus();
         $("form small").hide();
         function checkuname(){   
@@ -171,6 +234,7 @@
                     },
                     success:function(data)
                     {
+                        alert(data);
                         if(data == 1)
                         {
                             window.location.href = "./index.php";

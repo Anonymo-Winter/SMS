@@ -88,12 +88,12 @@
                                         <select class="form-select" name="dept" id="dept" aria-describedby="deperr">
                                         <option value="" selected>--select one--</option>
                                         <?php 
-                                            $dep = "select dept_name from department";
+                                            $dep = "select * from department";
                                             $res_dep = mysqli_query($conn,$dep);
                                             while($dep_row = $res_dep->fetch_assoc())
                                             {
                                         ?>
-                                            <option value="<?php echo $dep_row['dept_name']?>" <?php if(isset($result) && $result['dept']==$dep_row['dept_name']) echo "selected"?> > <?php echo $dep_row['dept_name']?></option>";
+                                            <option value="<?php echo $dep_row['depId']?>" <?php if(isset($result) && $result['dept']==$dep_row['depId']) echo "selected"?> > <?php echo $dep_row['dept_name']?></option>";
                                         <?php
                                             }
                                         ?>
@@ -137,7 +137,7 @@
 <!-- Toast -->
 <div class="col-md-5">
     <div class="toast-container position-fixed bottom-0 end-0 m-5">
-        <div id="liveToast" class="toast  align-items-center" role="alert" aria-live="assertive" aria-atomic="true" >
+        <div id="liveToast" class="container-fluid toast  align-items-center" role="alert" aria-live="assertive" aria-atomic="true" >
             <div class="d-flex">
                 <div class="toast-body msg fw-bold text-nowrap">
                 </div>
@@ -177,7 +177,6 @@
                             'Data Submitted', 
                             'success' 
                         ); 
-                        loadTable();
                     }
                     else if(response == "error")
                     {
@@ -203,6 +202,7 @@
                             'error' 
                         );
                     }
+                    loadTable();
                 },
                 error: function() {
                     alert('Error uploading file');
@@ -222,12 +222,12 @@
                 $("#deperr").hide();
             }
         })
-        function settings(toast_class,msg_class,msg)
-        {
+        function settings(toast_class,msg_class,msg){
             $(".msg").removeClass("text-danger text-success text-primary text-warning").addClass(msg_class).html(msg);
             $("#liveToast").removeClass("bg-danger-subtle bg-success-subtle bg-primary-subtle bg-warning-subtle").addClass(toast_class);
             liveToast.show();
         }
+
         $(document).on("click", ".btn-delete", function(e){
             var studentId = $(this).data("id");
             if(confirm("Are you sure you want to delete this student?")) {
@@ -237,15 +237,23 @@
                     data: { id: studentId ,action:"delete"},
                     success: function(response) {
                         if(response == 1){
-                            settings("bg-success-subtle","text-success","Students deleted successfully!");
+                            settings("bg-success-subtle","text-success","Class deleted successfully!");
                             loadTable();
                         }
                         else{
-                            settings("bg-warning-subtle","text-warning","Error Occured while deleting student.");
+                            Swal.fire(
+                            "Invalid data",
+                            "Error occured while deleting class, try again later!",
+                            "error"
+                        )
                         }
                     },
                     error: function() {
-                        settings("bg-danger-subtle","text-danger","Error occurred while deleting student.");
+                        Swal.fire(
+                            "Invalid data",
+                            "error: Error occured while deleting class, try again later!",
+                            "error"
+                        )
                     }
                 });
             }
@@ -258,20 +266,29 @@
                 type : "POST",
                 data:{sclass:$("#sclass").val().toUpperCase(),dept:$("#dept").val().toUpperCase()},
                 beforeSend : function(){
-                    $("#submit-btn").val("Saving..");
+                    $("#submit-btn").val("saving..");
                     $("#submit-btn").attr("disabled","disabled");
                 },
                 success : function(data){
                     if(data == 1){
-                        settings("bg-success-subtle","text-success","Data Inserted Successfully!");
+                        Swal.fire("Success","class created successfully!","success");
                         $("#addClass").trigger("reset");
                         loadTable();
                     }
                     else{
-                        settings("bg-warning-subtle","text-warning","Invalid Data! Try Again.");
+                        Swal.fire(
+                            "Invalid data",
+                            "error: invalid class name",
+                            "error"
+                        )
                     }
                 },
                 error:function(data){
+                        Swal.fire(
+                            "Invalid data",
+                            "error: Error occured while creating class, try again later!",
+                            "error"
+                        )
                     settings("bg-danger-subtle","text-danger","Error Occured While Inserting Data ! Data! Try Again.");
                 }
             });
@@ -299,59 +316,41 @@
                     else{
                         settings("bg-warning-subtle","text-warning","Error updating! Try Again.");
                     }
-                    $("submit-btn").attr("disabled",false);
-                    $("#submit-btn").val("Update");
                 },
                 error:function(){
                     settings("bg-danger-subtle","text-danger","Error updating! Try Again.");
+                },
+                complete:function(){
+                    $("submit-btn").attr("disabled",false);
+                    $("#submit-btn").val("Update");
                 }
             })
         });
-
-        // $("#file-submit").on("submit",function(e){
-        //     e.preventDefault();
-        //     var fromData = new FormData();
-        //     formData.append('file',$('#csv_file')[0].files[0]);
-        //     $.ajax({
-        //         url: 'upload_student.php',
-        //         type:"POST",
-        //         data : formData,
-        //         success:function(data){
-        //             alert(data);
-        //         },
-        //         error:function()
-        //         {
-        //             alert("error confirmed");
-        //         }
-        //     });
-        // });
-
         function loadTable(){
             $.ajax({
                 url : "./fetch/fetchdata.php?action=classes",
                 type:"GET",
                 dataType:"json",
                 success:function(data){
-                    var tableHTML = "<table id='dataTable' class='display table table-bordered'><thead class='table-dark'><th class='text-center'>#</th><th class='text-center'>Class</th><th class='text-center'>Dept</th><th class='text-center'>Edit</th><th class='text-center'>Delete</th></thead><tbody class='text-center'>";
+                    var tableHTML = "<table id='dataTable' class='display table table-bordered table-hover table-striped'><thead class='table-dark'><th class='text-center'>#</th><th class='text-center'>Class</th><th class='text-center'>Dept</th><th class='text-center'>Edit</th><th class='text-center'>Delete</th></thead><tbody class='text-center'>";
                     data.forEach(function(row) {
                         tableHTML += "<tr>";
                         tableHTML += "<td class='text-center'>" + row.id + "</td>";
-                        // tableHTML += "<td class='text-center'>" + "<div class='form-check'>\
-                        // <input class='form-check-input' type='checkbox' value="+row.id+" id='flexCheckDefault'>\
-                        // <label class='form-check-label' for='flexCheckDefault'>"++"row.id
-                        // </label></div>" + "</td>";
                         tableHTML += "<td>" + row.Sclass + "</td>";
-                        tableHTML += "<td>" + row.dept + "</td>";
+                        tableHTML += "<td>" + row.dept_name + "</td>";
                         tableHTML += "<td><a href='./manageClass.php?action=edit&id="+row.id+"' class='btn btn-primary btn-sm btn-edit' data-id='" + row.id + "'>Edit</a></td>";
                         tableHTML += "<td><button class='btn btn-danger btn-sm btn-delete' data-id='" + row.id + "'>Delete</button></td>";
                         tableHTML += "</tr>";
                     });
                     tableHTML += "</tbody></table>";
                     $("#mytable").html(tableHTML);
-                    $("#dataTable").DataTable({
-                        responsive:true,
-                        autoWidth:true,
-                        pagingType: 'simple_numbers',
+                    table = $("#dataTable").DataTable({
+                        responsive: true, 
+                        autoWidth: false,
+                        "createdRow": function(row, data, dataIndex){
+                            $(row).find('td:eq(0)').text(dataIndex + 1); 
+                            $(row).find('td:eq(0)').addClass("sino");
+                        },
                     });
                 },
                 error:function(){
@@ -372,7 +371,6 @@
         document.body.classList.toggle('sb-sidenav-toggled');
     });
 </script>
-<!-- <script src="./script.js"></script> -->
 </body>
 </html>
 <?php 

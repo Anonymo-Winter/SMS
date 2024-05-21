@@ -94,12 +94,12 @@
                                         <select class="form-select" name="dept" id="dept" >
                                         <option value="" selected>--select department--</option>
                                         <?php 
-                                            $dep = "select dept_name from department";
+                                            $dep = "select * from department";
                                             $res_dep = mysqli_query($conn,$dep);
                                             while($dep_row = $res_dep->fetch_assoc())
                                             {
                                         ?>
-                                            <option value="<?php echo $dep_row['dept_name'];?>" <?php if(isset($result) && $result['dept']==$dep_row['dept_name']) echo "selected";?> > <?php echo $dep_row['dept_name'];?></option>";
+                                            <option value="<?php echo $dep_row['depId'];?>" <?php if(isset($result) && $result['dept']==$dep_row['depId']) echo "selected";?> > <?php echo $dep_row['dept_name'];?></option>";
                                         <?php
                                             }
                                         ?>
@@ -155,7 +155,7 @@
 <!-- Toast -->
 <div class="col-md-5">
     <div class="toast-container position-fixed bottom-0 end-0 m-5">
-        <div id="liveToast" class="toast  align-items-center" role="alert" aria-live="assertive" aria-atomic="true" >
+        <div id="liveToast" class="container-fluid toast  align-items-center" role="alert" aria-live="assertive" aria-atomic="true" >
             <div class="d-flex">
                 <div class="toast-body msg fw-bold text-nowrap">
                 </div>
@@ -171,13 +171,14 @@
     </div>
 </div>
 <script>
-    if($("#updateCr").length){
-        $(".class").show();
-    }
-    else{
-        $(".class").hide();
-    }
+   
     $(document).ready(function(){
+        if($("#updateCr").length == 0){
+            $(".class").hide();
+        }
+        else{
+            $(".class").show();
+        }
         $('#uploadForm').on('submit', function(e) {
             e.preventDefault();
             var formData = new FormData();
@@ -190,7 +191,6 @@
                 processData: false,
                 contentType: false,
                 beforeSend:function(){
-                    // document.getElementById("form-submit").style.display="none";
                     $("#form-submit").val("Saving..");
                     $("#form-submit").attr("disabled","disabled");
                 },
@@ -241,7 +241,6 @@
         });
         $("#dept").on("change",function(){
            var deptname = $("#dept").val();
-           $(".class").show();
            $.ajax({
                 url:'./fetch/fill_select.php',
                 type:"POST",
@@ -260,6 +259,7 @@
                         $("#submit-btn").attr("disabled",true);
                     }
                     else{
+                        $(".class").show();
                         $(".cls-msg").html("").hide();
                         $("#sclass").html(data);
                         $("#submit-btn").attr("disabled",false);
@@ -270,8 +270,7 @@
                 }
            }) 
         });
-        function settings(toast_class,msg_class,msg)
-        {
+        function settings(toast_class,msg_class,msg){
             $(".msg").removeClass("text-danger text-success text-primary text-warning").addClass(msg_class).html(msg);
             $("#liveToast").removeClass("bg-danger-subtle bg-success-subtle bg-primary-subtle bg-warning-subtle").addClass(toast_class);
             liveToast.show();
@@ -310,18 +309,25 @@
                     $("#submit-btn").attr("disabled","disabled");
                 },
                 success : function(data){
-                    alert(data);
                     if(data == 1){
                         settings("bg-success-subtle","text-success","<i class='fas fa-circle-check mx-2'></i>CR Data Inserted Successfully!");
                         $("#addCr").trigger("reset");
                         loadTable();
                     }
                     else{
-                        settings("bg-danger-subtle","text-danger","<i class='fas fa-circle-exclamation mx-2'></i>"+data);
+                        Swal.fire(
+                            "Error",
+                            data,
+                            "error"
+                        )
                     }
                 },
                 error:function(data){
-                    settings("bg-danger-subtle","text-danger","<i class='fas fa-circle-exclamation mx-2'></i>Error Occured While Inserting Data! Data! Try Again.");
+                    Swal.fire(
+                            "Error",
+                            "Error Occured While Inserting Data! Data! Try Again.",
+                            "error"
+                    )
                 }
             });
             $("#submit-btn").val("Save");
@@ -330,37 +336,40 @@
 
         $("#updateCr").on("submit",function(e){
             e.preventDefault();
-            $("submit-btn").attr("disabled",false);
             $.ajax({
                 url : './fetch/addCr.php',
-                type:"POST",
-                beforeSend:function(){
-                    $("#submit-btn").val("Updating..");
-                    $("#submit-btn").attr("disabled","disabled"); 
-                },
+                type : "POST",
                 data:{sid:$("#sid").val().toUpperCase(),sclass:$("#sclass").val().toUpperCase(),dept:$("#dept").val().toUpperCase(),id:$("#id").val(),update:$("#update").val()},
-                success:function(data){
-                    alert(data);
+                beforeSend : function(){
+                    $("#submit-btn").val("Saving..");
+                    $("#submit-btn").attr("disabled","disabled");
+                },
+                success : function(data){
                     if(data == 1){
-                        settings("bg-success-subtle","text-success","<i class='fas fa-circle-check mx-2'></i>CR Updated successfully!");
+                        settings("bg-success-subtle","text-success","<i class='fas fa-circle-check mx-2'></i>CR Data Inserted Successfully!");
+                        $("#addCr").trigger("reset");
                         loadTable();
                         window.location.replace("./manageLeader.php");
                     }
                     else{
-                        settings("bg-warning-subtle","text-warning","<i class='fas fa-circle-exclamation mx-2'></i>Error updating! Try Again.");
+                        Swal.fire(
+                            "Error",
+                            data,
+                            "error"
+                        )
                     }
-                    $("submit-btn").attr("disabled",false);
-                    $("#submit-btn").val("Update");
                 },
-                error:function(){
-                    settings("bg-danger-subtle","text-danger","<i class='fas fa-circle-exclamation mx-2'></i>Error updating! Try Again.");
-                },
-                complete:function(){
-                    $("submit-btn").attr("disabled",false);
-                    $("#submit-btn").val("Update");
+                error:function(data){
+                    Swal.fire(
+                            "Error",
+                            "Error Occured While Inserting Data! Data! Try Again.",
+                            "error"
+                    )
                 }
-            })
-        });        
+            });
+            $("#submit-btn").val("Save");
+            $("#submit-btn").attr("disabled",false);                    
+        });       
 
         function loadTable(){
             $.ajax({
@@ -368,23 +377,27 @@
                 type:"GET",
                 dataType:"json",
                 success:function(data){
-                    var tableHTML = "<table id='dataTable' class='display table table-bordered'><thead class='table-dark'><th class='text-center'>#</th><th>CR Id</th><th class='text-center'>Class</th><th class='text-center'>Dept</th><th class='text-center'>Edit</th><th class='text-center'>Delete</th></thead><tbody class='text-center'>";
+                    var tableHTML = "<table id='dataTable' class='display table table-bordered table-hover table-striped'><thead class='table-dark text-center'><th class='text-center'>#</th><th class='text-center'>CR Id</th><th class='text-center'>Class</th><th class='text-center'>Dept</th><th class='text-center'>Edit</th><th class='text-center'>Delete</th></thead><tbody class='text-center'>";
                     data.forEach(function(row) {
                         tableHTML += "<tr>";
                         tableHTML += "<td class='text-center'>" + row.id + "</td>";
                         tableHTML += "<td>" + row.Sid + "</td>";
                         tableHTML += "<td>" + row.Sclass + "</td>";
-                        tableHTML += "<td>" + row.dept + "</td>";
+                        tableHTML += "<td>" + row.dept_name + "</td>";
                         tableHTML += "<td><a href='./manageLeader.php?action=edit&id="+row.id+"' class='btn btn-primary btn-sm btn-edit' data-id='" + row.id + "'>Edit</a></td>";
                         tableHTML += "<td><button class='btn btn-danger btn-sm btn-delete' data-id='" + row.id + "'>Delete</button></td>";
                         tableHTML += "</tr>";
                     });
                     tableHTML += "</tbody></table>";
                     $("#mytable").html(tableHTML);
-                    $("#dataTable").DataTable({
-                        responsive:true,
-                        // autoWidth:true,
-                        pagingType: 'simple_numbers',
+                    table = $("#dataTable").DataTable({
+                        responsive: true, 
+                        autoWidth: false,
+                        order: [[0, 'asc']],
+                        "createdRow": function(row, data, dataIndex){
+                            $(row).find('td:eq(0)').text(dataIndex + 1); 
+                            $(row).find('td:eq(0)').addClass("sino");
+                        },
                     });
                 },
                 error:function(){

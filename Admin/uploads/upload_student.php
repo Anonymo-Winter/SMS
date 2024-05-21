@@ -16,7 +16,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if (($handle = fopen($csvFile, "r")) !== FALSE) {
                 while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
                     $count+=1;
-                    if (count($data) == 5 && checkrollno($data[0]) && checkid(strtoupper($data[1])) && checkname(strtoupper($data[2])) && checkclass(strtoupper($data[4]),$conn) && checkdept($data[3],$conn)) {
+                    if (count($data) == 5 && checkrollno($data[0],strtoupper($data[4]),$conn) && checkid(strtoupper($data[1])) && checkname(strtoupper($data[2])) && checkclass(strtoupper($data[4]),$conn) && checkdept($data[3],$conn)) {
                         $rowsToInsert[] = $data;
                     } else {
                         $err[] = implode(",",$data);
@@ -42,8 +42,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         $check->store_result();
                         if ($check->num_rows() == 0) {
                             $stmt->bind_param("sssss", $row[0], $row[1], $row[2],$row[3],$row[4]);
-                            if ($stmt->execute()) {
-                            } else {
+                            if (!$stmt->execute()) {
                                 echo "Error inserting record: " .$stmt->error;
                                 $good=false;
                             }
@@ -74,9 +73,22 @@ function checkid($id){
     $idpattern = '/^[S]\d{6}$/';
     return preg_match($idpattern, $id);
 }
-function checkrollno($rollNo){
+function checkrollno($rollNo,$class,$conn){
     $idpattern = '/^\d{1,3}$/';
-    return preg_match($idpattern, $rollNo);
+    if(preg_match($idpattern, $rollNo))
+    {
+        $sql = mysqli_num_rows(mysqli_query($conn,"select * from students where Srollno = '$rollNo' and Sclass='$class'"));
+        if($sql == 0)
+        {
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+    else{
+        return false;
+    }
 }
 
 function checkname($name){
@@ -100,7 +112,7 @@ function checkclass($class,$conn){
 }
 
 function checkdept($dept,$conn){
-    $stmt = "SELECT * FROM department where dept_name='$dept'";
+    $stmt = "SELECT * FROM department where depId='$dept'";
     $res = mysqli_query($conn,$stmt);
     if($res)
     {

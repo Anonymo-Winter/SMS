@@ -11,7 +11,7 @@
             $sql = "SELECT * FROM classes where dept = '{$dept}'";
             $result = mysqli_query($conn,$sql);
             $str="<option value=''>--select class--</option>";
-            if($result->num_rows>0)
+            if($result->num_rows > 0)
             {
                 while($row = $result->fetch_assoc())
                 {

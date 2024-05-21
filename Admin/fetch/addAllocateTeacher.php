@@ -2,50 +2,47 @@
 require_once '../include/config.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        $error = 0;
-        if (empty(trim($_POST["tname"])) || empty(trim($_POST["sclass"])) ||  empty(trim($_POST["crid"])) || empty(trim($_POST["courseid"])) ) 
+        if (!isset($_POST["sclass"],$_POST["dept"],$_POST["courseid"],$_POST["tid"]) || empty(trim($_POST["tid"])) ||
+            empty(trim($_POST["sclass"])) || empty(trim($_POST["courseid"])) || empty(trim($_POST["dept"])) ) 
         {
-            $error++;
-            echo "Err 404 : Bad Gateways";
-        } 
+            echo "To proceed please fill all mandatory fields!";
+        }
         else 
         {
             $tid = trim($_POST["tid"]);
-            $tname = trim($_POST["tname"]);
             $sclass = trim($_POST["sclass"]);
             $Course_id = trim($_POST["courseid"]);
-            $Cr_id = trim($_POST["crid"]);
             if (isset($_POST["update"])){
-                $sql = "UPDATE `allocate_teacher` SET `tname`=?,`Sclass`=?,`Course_id`=?,`Cr_id`=? WHERE `tid`=?";
+                $sql = "UPDATE `allocate_teacher` SET `Sclass`=?,`Course_id`=? WHERE `tid`=?";
                 $stmt = $conn->prepare($sql);
-                $stmt->bind_param("sssss", $tname, $sclass,$Course_id,$Cr_id,$_POST["tid"]);
+                $stmt->bind_param("sss", $sclass,$Course_id,$tid);
                 try{
                     if ($stmt->execute()) {
                         echo 1;
                     } else {
-                        echo 0;
+                        echo "Unable to update. Please try again!";
                     }
                 }catch(Exception $e){
-                    echo '';
+                    echo 'Potential issues: duplicate entry or invalid data. please try again';
                 }
             }
             else {
-                $sql = "INSERT INTO `allocate_teacher`(`tid`,`tname`, `Sclass`, `Course_id`,`Cr_id`) VALUES (?,?,?,?,?)";
+                $sql = "INSERT INTO `allocate_teacher`(`tid`, `Sclass`, `Course_id`) VALUES (?,?,?)";
                 $stmt = $conn->prepare($sql);
-                $stmt->bind_param("sssss",$tid,$tname, $sclass, $Course_id,$Cr_id);
+                $stmt->bind_param("sss",$tid,$sclass, $Course_id);
                 try{
                     if ($stmt->execute()) {
                         echo 1;
                     } else {
-                        echo 0;
+                        echo "Something went wrong. Please try again!";
                     }
                 }catch(Exception $e)
                 {
-                    echo 0;
+                    echo 'Potential issues: duplicate entry or invalid data. please try again';
                 }
             }
     }
 } else {
-    echo "Err 404 : Bad Gateways";
+    echo "Critical error occured!";
 }
 ?>

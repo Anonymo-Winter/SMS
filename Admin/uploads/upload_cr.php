@@ -16,7 +16,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if (($handle = fopen($csvFile, "r")) !== FALSE) {
                 while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
                     $count+=1;
-                    if (count($data) == 5 && checkid(strtoupper($data[0])) &&  checkstudent($data[0],$data[1],$data[2],$conn) && checkclass(strtoupper($data[2]),$conn) && checkdept($data[1],$conn)) {
+                    if (count($data) == 3 && checkid(strtoupper($data[0])) &&  checkstudent($data[0],$data[2],$conn) && checkclass(strtoupper($data[2]),$conn) && checkdept($data[1],$conn)) {
                         $rowsToInsert[] = $data;
                     } else {
                         $err[] = implode(",",$data);
@@ -70,10 +70,31 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         echo "Invalid File!";
     }
 }
-
 function checkid($id){
     $idpattern = '/^[S]\d{6}$/';
     return preg_match($idpattern, $id);
+}
+function checkrollno($rollNo,$class,$conn){
+    $idpattern = '/^\d{1,3}$/';
+    if(preg_match($idpattern, $rollNo))
+    {
+        $sql = mysqli_num_rows(mysqli_query($conn,"select * from students where Srollno = '$rollNo' and Sclass='$class'"));
+        if($sql == 0)
+        {
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+    else{
+        return false;
+    }
+}
+
+function checkname($name){
+    $namepattern = '/^[a-zA-Z ]+$/';
+    return preg_match($namepattern, $name);
 }
 
 function checkclass($class,$conn){
@@ -85,33 +106,14 @@ function checkclass($class,$conn){
         {
             return 1;
         }
-        else{
-            return 0;
-        }
     }
     else{
         return 0;
     }
 }
-function checkstudent($Sid,$dept,$class,$conn){
-    $stmt = "SELECT * FROM students where Sclass='$class' and dept = '$dept' and Sid='$Sid'";
-    $res = mysqli_query($conn,$stmt);
-    if($res)
-    {
-        if($res->num_rows)
-        {
-            return 1;
-        }
-        else{
-            return 0;
-        }
-    }
-    else{
-        return 0;
-    }
-}
+
 function checkdept($dept,$conn){
-    $stmt = "SELECT * FROM department where dept_name='$dept'";
+    $stmt = "SELECT * FROM department where depId='$dept'";
     $res = mysqli_query($conn,$stmt);
     if($res)
     {
@@ -119,12 +121,21 @@ function checkdept($dept,$conn){
         {
             return 1;
         }
-        else{
-            return 0;
-        }
     }
     else{
         return 0;
     }
 }
+function checkstudent($id,$class,$conn){
+    $stmt = "SELECT * FROM students where Sid='$id' and Sclass='$class'";
+    $res = mysqli_query($conn,$stmt);
+    if($res)
+    {
+        return $res->num_rows;
+    }
+    else{
+        return 0;
+    }
+}
+
 ?>

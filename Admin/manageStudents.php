@@ -19,16 +19,8 @@
     <meta name="description" content="" />
     <meta name="author" content="" />
     <title>Dashboard</title>
-    <script src= "https://cdn.jsdelivr.net/npm/sweetalert2@9"> </script> 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" ></script>
 
-    <link href="./css/styles.css" rel="stylesheet" />
-    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
-
-    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.3/css/dataTables.dataTables.css" />
-    <script src="https://cdn.datatables.net/2.0.3/js/dataTables.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <?php include './include/linker.php' ?>
 
     <style>
         .form-select:active,
@@ -102,7 +94,7 @@
                                         <select class="form-select" name="dept" id="dept" >
                                             <option value="" selected>--select department--</option>
                                             <?php
-                                                $dep_sql1 = "SELECT * FROM `classes`,department where dept=dept_name and Sclass='{$result['Sclass']}'";
+                                                $dep_sql1 = "SELECT * FROM `classes` where Sclass='{$result['Sclass']}'";
                                                 $dep_sql1 = mysqli_query($conn,$dep_sql1);
                                                 $dep_sql1 = mysqli_fetch_assoc($dep_sql1);
                                                 $dep_sql = "Select * from department";
@@ -110,13 +102,12 @@
                                                 while($row = mysqli_fetch_assoc($dep_result))
                                                 {
                                             ?>
-                                                <option value="<?php echo $row['dept_name']?>" <?php if(isset($result) && $dep_sql1['dept_name']==$row['dept_name']) echo "selected"?> > <?php echo $row['dept_name']?></option>";
+                                                <option value="<?php echo $row['depId']?>" <?php if(isset($result) && $dep_sql1['dept']==$row['depId']) echo "selected"?> > <?php echo $row['dept_name']?></option>";
                                             <?php
                                                 }
                                             ?>
                                         </select>
                                     </div>
-                                    
                                     <small class="mb-3 cls-msg"></small>
                                     <div class="mb-3 class">
                                         <label for="sclass" class="form-label">Class</label>
@@ -154,10 +145,14 @@
                         </form>
                     </div>
                 </div>
-                <div class="container-fluid p-4">
-                    <div class="container-fluid shadow border border-secondary rounded py-2">
-                        <div id="mytable" class="table table-responsive">
-                            <!-- table  -->
+                <div class="container-fluid showme mt-4">
+                    <div class="row">
+                        <div class="col">
+                            <div class="shadow border border-secondary rounded py-2">
+                                <div id="mytable" class="table-responsive p-3">
+                                    
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -183,6 +178,7 @@
 </div>
 <script>
     $(document).ready(function(){
+        var liveToast = new bootstrap.Toast(document.getElementById('liveToast'));
         $('#uploadForm').on('submit', function(e) {
             e.preventDefault();
             var formData = new FormData();
@@ -195,7 +191,6 @@
                 processData: false,
                 contentType: false,
                 beforeSend:function(){
-                    // document.getElementById("form-submit").style.display="none";
                     $("#form-submit").val("Saving..");
                     $("#form-submit").attr("disabled","disabled");
                 },
@@ -244,7 +239,13 @@
                     }
             });
         });
-        $(".class").hide();
+        if($("#updateStudent").length == 0)
+        {
+            $(".class").hide();
+        }
+        else{
+            $(".class").show();
+        }
         $("#dept").on("change",function(){
            var deptname = $("#dept").val();
            $(".class").show();
@@ -276,8 +277,7 @@
                 }
            }) 
         });
-        function settings(toast_class,msg_class,msg)
-        {
+        function settings(toast_class,msg_class,msg){
             $(".msg").removeClass("text-danger text-success text-primary text-warning").addClass(msg_class).html(msg);
             $("#liveToast").removeClass("bg-danger-subtle bg-success-subtle bg-primary-subtle bg-warning-subtle").addClass(toast_class);
             liveToast.show();
@@ -291,15 +291,20 @@
                     data: { id: studentId ,action:"delete"},
                     success: function(response) {
                         if(response == 1){
+                        //     // Swal.fire( 
+                        //     // 'Success', 
+                        //     // 'student added successdully', 
+                        //     // 'success' 
+                        //     // );
                             settings("bg-success-subtle","text-success","Students deleted successfully!");
                             loadTable();
                         }
                         else{
-                            settings("bg-warning-subtle","text-warning","Error Occured while deleting student.");
+                            settings("bg-warning-subtle","text-warning","Error Occured while deleting student");
                         }
                     },
                     error: function() {
-                        settings("bg-danger-subtle","text-danger","Error occurred while deleting student.");
+                        settings("bg-danger-subtle","text-danger","Error occurred!");
                     }
                 });
             }
@@ -311,7 +316,7 @@
                 type : "POST",
                 data:{sname:$("#sname").val().toUpperCase(),sid:$("#sid").val().toUpperCase(),sclass:$("#sclass").val().toUpperCase(),srollno:$("#srollno").val().toUpperCase(),dept:$("#dept").val().toUpperCase()},
                 beforeSend : function(){
-                    $("#submit-btn").val("Saving..");
+                    $("#submit-btn").val("saving..");
                     $("#submit-btn").attr("disabled","disabled");
                 },
                 success : function(data){
@@ -321,14 +326,14 @@
                         loadTable();
                     }
                     else{
-                        settings("bg-warning-subtle","text-warning","Invalid Data! Try Again.");
+                        settings("bg-danger-subtle","text-danger","Invalid Data! Try Again.");
                     }
                 },
                 error:function(data){
                     settings("bg-danger-subtle","text-danger","Error Occured While Inserting Data ! Data! Try Again.");
                 }
             });
-            $("#submit-btn").val("Save");
+            $("#submit-btn").val("Submit");
             $("#submit-btn").attr("disabled",false);                    
         });
 
@@ -344,22 +349,34 @@
                 },
                 data:{sname:$("#sname").val().toUpperCase(),sid:$("#sid").val().toUpperCase(),sclass:$("#sclass").val().toUpperCase(),srollno:$("#srollno").val().toUpperCase(),dept:$("#dept").val().toUpperCase(),id:$("#id").val(),update:$("#update").val()},
                 success:function(data){
-                    alert(data);
                     if(data == 1){
-                        settings("bg-success-subtle","text-success","Data updated successfully!");
-                        loadTable();
+                        Swal.fire( 
+                            'Success', 
+                            'student updated successfully', 
+                            'success' 
+                        );
+                        setTimeout(() => {
                         window.location.replace("./manageStudents.php");
+                        }, 3500);
                     }
                     else{
-                        settings("bg-warning-subtle","text-warning","Error updating! Try Again.");
+                        Swal.fire(
+                            "Invalid data!",
+                            "please ensure the data is correct",
+                            "error"
+                        );
                     }
                 },
                 error:function(){
-                    settings("bg-danger-subtle","text-danger","Error updating! Try Again.");
+                    Swal.fire(
+                            "Error occured!",
+                            "error Updating student",
+                            "error"
+                        );        
                 },
                 complete:function(){
                     $("#submit-btn").attr("disabled",false);
-                    $("#submit-btn").val("Updatex");
+                    $("#submit-btn").val("Update");
                 }
             });
         });
@@ -369,33 +386,36 @@
                 type:"GET",
                 dataType:"json",
                 success:function(data){
-                    var tableHTML = "<table id='dataTable' class='display table table-bordered'><thead class='table-dark'><th class='text-center'>Roll No</th><th class='text-center'>Id</th><th class='text-center'>Name</th><th>class</th><th>dept</th><th class='text-center'>Edit</th><th class='text-center'>Delete</th></thead><tbody class='text-center'>";
+                    var tableHTML = "<table id='dataTable' class='display table table-bordered table-hover table-striped'><thead class='table-dark'><th class='text-center'>Roll No</th><th class='text-center'>Id</th><th class='text-center'>Name</th><th class='text-center'>class</th><th class='text-center'>dept</th><th class='text-center'>Edit</th><th class='text-center'>Delete</th></thead><tbody class='text-center'>";
                     data.forEach(function(row) {
                         tableHTML += "<tr>";
-                        tableHTML += "<td>" + row.Srollno + "</td>";
+                        tableHTML += "<td class='text-center'>" + row.Srollno + "</td>";
                         tableHTML += "<td>" + row.Sid + "</td>";
                         tableHTML += "<td>" + row.Sname + "</td>";
                         tableHTML += "<td>" + row.Sclass + "</td>";
-                        tableHTML += "<td>" + row.dept + "</td>";
+                        tableHTML += "<td>" + row.dept_name + "</td>";
                         tableHTML += "<td><a href='./manageStudents.php?action=edit&id="+row.Sid+"' class='btn btn-primary btn-sm btn-edit' data-id='" + row.Sid + "'>Edit</a></td>";
                         tableHTML += "<td><button class='btn btn-danger btn-sm btn-delete' name='student' data-id='" + row.Sid + "'>Delete</button></td>";
                         tableHTML += "</tr>";
                     });
                     tableHTML += "</tbody></table>";
                     $("#mytable").html(tableHTML);
-                    $("#dataTable").DataTable({
-                        responsive:true,
-                        autoWidth:true,
-                        pagingType: 'simple_numbers',
+                    table = $("#dataTable").DataTable({
+                        responsive: true, 
+                        autoWidth: false,
+                        order: [[0, 'asc']],
                     });
                 },
                 error:function(){
-                    alert("error");
+                    Swal.fire( 
+                            'Error', 
+                            'Error loading table', 
+                            'error' 
+                        );
                 }
             });
         }
         loadTable();
-        var liveToast = new bootstrap.Toast(document.getElementById('liveToast'));
     });
 </script>
 <script>
@@ -405,7 +425,6 @@
         document.body.classList.toggle('sb-sidenav-toggled');
     });
 </script>
-<!-- <script src="./script.js"></script> -->
 </body>
 </html>
 <?php 

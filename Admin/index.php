@@ -54,8 +54,8 @@
             $classes = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(*) as total_classes FROM CLASSES"));
             $classes = $classes["total_classes"];
 
-            $classe_cr = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(*) as total_crs FROM CLASS_CRS"));
-            $classe_cr = $classe_cr["total_crs"];
+            $department = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(*) as total_dept FROM DEPARTMENT"));
+            $department = $department["total_dept"];
             
 
         ?>
@@ -106,8 +106,8 @@
                         <div class="card-body">
                         <div class="row no-gutters align-items-center">
                             <div class="col mr-2">
-                                <div class="text-xs font-weight-bold text-uppercase text-muted mb-1">Class CRS</div>
-                                <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800"><?php echo $classe_cr ?></div>
+                                <div class="text-xs font-weight-bold text-uppercase text-muted mb-1">departments</div>
+                                <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800"><?php echo $department ?></div>
                             </div>
                             <div class="col-auto">
                             <i class="fas fa-code-branch fa-2x text-success"></i>

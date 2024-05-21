@@ -42,6 +42,8 @@
     <script src="https://cdn.datatables.net/2.0.5/js/dataTables.bootstrap5.js"></script>
     <script src="https://cdn.datatables.net/select/2.0.1/js/dataTables.select.js"></script>
     <script src="https://cdn.datatables.net/select/2.0.1/js/select.dataTables.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" ></script>
+
 
     <style>
         .form-select:active,
@@ -52,11 +54,15 @@
             box-shadow:none;
         }
         .form-select,
+        .form-control,
         input[type="date"]{
             width:90%;
         }
         thead th{
             text-align: center;
+        }
+        .form-control{
+            text-transform: uppercase;
         }
         .btn-close-danger{
             color:red;
@@ -79,29 +85,25 @@
                     </nav>
                 </div>
                 <?php 
-                    $teacher_class = "select distinct Sclass from allocate_teacher where tid = '{$_SESSION["id"]}'";
-                    $teacher_class_result = mysqli_query($conn,$teacher_class);
+                    $student_details = "SELECT * FROM STUDENTS WHERE SID = '$_SESSION[sid]'";
+                    $student_details = mysqli_query($conn,$student_details);
+                    $student_details = mysqli_fetch_assoc($student_details);
+                    print_r($student_details);
 
-                    $teacher_subject = "select distinct Course_id from allocate_teacher where tid = '{$_SESSION["id"]}'";
-                    $teacher_subject_result = mysqli_query($conn,$teacher_subject);
+                    $subject_details = "SELECT course_name subjects,students FROM  WHERE SID = '$_SESSION[sid]'";
+                    $subject_details = mysqli_query($conn,$subject_details);
+                    $subject_details = mysqli_fetch_assoc($subject_details);
+                    print_r($subject_details);
                 ?>
+
                 <div class="row p-4">
                     <div class="card shadow border border-secondary">
                         <div class="card-body">
-                            <form id="viewStudent" class="">
+                            <form id="viewStudent" class="needs-validation" novalidate>
                                 <div class="row row-cols-1 row-cols-md-2 g-3">
                                     <div class="col">
-                                        <label for="sclass" class="form-label">Class<span class="text-danger fw-bold">*</span>:</label>
-                                        <select class="form-select" name="sclass" id="sclass">
-                                            <option value="" selected>--select class--</option>
-                                            <?php while($row = mysqli_fetch_assoc($teacher_class_result)) { ?>
-                                                <option value="<?php echo $row['Sclass']?>"><?php echo $row['Sclass']?></option>
-                                            <?php } ?>
-                                        </select>
-                                    </div>
-                                    <div class="col">
                                         <label for="scourse" class="form-label">Subject<span class="text-danger fw-bold">*</span>:</label>
-                                        <select class="form-select" name="scourse" id="scourse">
+                                        <select class="form-select" name="scourse" id="scourse" required>
                                             <option value="" selected>--select subject--</option>
                                             <?php while($row = mysqli_fetch_assoc($teacher_subject_result)) { ?>
                                                 <option value="<?php echo $row['Course_id']?>"><?php echo $row['Course_id']?></option>
@@ -110,7 +112,7 @@
                                     </div>
                                     <div class="col">
                                         <label for="type" class="form-label">Type<span class="text-danger fw-bold">*</span>:</label>
-                                        <select class="form-select" name="type" id="type">
+                                        <select class="form-select" name="type" id="type" required>
                                             <option value="" selected>--select one--</option>
                                             <option value="bydate">By Date</option>
                                             <option value="overall">Over All</option>
@@ -118,17 +120,16 @@
                                     </div>
                                     <div class="col dated">
                                         <label for="tdate" class="form-label">Date<span class="text-danger fw-bold">*</span>:</label>
-                                        <input type="date" class="form-control" name="tdate" id="tdate" value="<?php echo date("Y-m-d")?>" />
+                                        <input type="date" class="form-control" name="tdate" id="tdate" value="<?php echo date("Y-m-d")?>" required>
                                     </div>
+                                </div>
+                                <div class="col d-flex pt-3">
+                                    <input type="submit" name="form-btn" id="form-btn" class="btn btn-primary mx-auto" >
                                 </div>
                             </form>
                         </div>
                     </div>
                 </div>
-<?php 
-    $checkattendance = "select * from attendance";
-    $checkattendance = mysqli_query($conn,$checkattendance);
-?>
                 <div class="container-fluid showme">
                     <div class="row">
                         <div class="col">
@@ -161,11 +162,9 @@
             if($("#type").val() == "bydate")
             {
                 $(".dated").show();
-                checkexist();
             }
             else if($("#type").val() == "overall"){
                 $(".dated").hide();
-                checkexist();
             }
             else{
                 $(".dated").hide();
@@ -173,15 +172,40 @@
         });
         $("#tdate").on("change",function(){
             $(".date").text($("#tdate").val())
-            checkexist();
         });
-        
-        $("#sclass,#scourse,#type").on("change",function(e){
-            if($("#scourse").val().trim() != "" && $("#sclass").val().trim() != "" && $("#type option:selected").attr("val") != ""){
-                $(".showme").show();
-                checkexist();
+        $("#viewStudent").on("submit",function(e){
+            e.preventDefault();
+            if($("#scourse").val().trim() != "" && $("#sclass").val().trim() != ""  && $("#Sid").val().trim() != ""  && $("#type option:selected").attr("value") != ""){
+                $.ajax({
+                    url:"./fetch/id_class.php",
+                    type:"POST",
+                    data:{sid:$("#Sid").val().trim(),sclass:$("#sclass").val().trim()},
+                    success:function(data){
+                        if(data)
+                        {
+                            $("viewStudent").trigger("reset");
+                            $(".showme").show();
+                            checkexist();
+                        }
+                        else{
+                            Swal.fire( 
+                            'Error', 
+                            'Invalid Student Id', 
+                            'error' 
+                        ); 
+                        }
+                    },
+                    error:function(){
+                        return 0;
+                    }
+                });
             }
             else{
+                Swal.fire( 
+                            'Error', 
+                            'To proceed, please fill in all required fields', 
+                            'error' 
+                        ); 
                 $(".showme").hide();
             }
         });
@@ -268,7 +292,8 @@
                 dataType:"json",
                 data:{
                     courseid: $("#scourse").val(),
-                    class_id: $("#sclass").val()
+                    class_id: $("#sclass").val(),
+                    sid: $("#Sid").val()
                 },
                 success:function(data){
                     var tableHTML = "<table id='dataTable' class='display table table-striped border-info-subtle table-bordered shadow table-hovered rounded'><thead class='table-dark'><th class='text-center'>Roll No</th><th class='text-center'>Name</th><th class='text-center'>Sid</th><th class='text-center'>Class</th><th class='text-center'>?/57</th></thead><tbody class='text-center'>";
@@ -295,16 +320,16 @@
                 }
             })
         }
-
         function loadbyDate(){
             $.ajax({
-                url : "./fetch/getAttendanceData.php",
+                url : "./fetch/getAttendanceData.php?action=individual",
                 type:"POST",
                 dataType:"json",
                 data:{
                     date: $("#tdate").val(),
                     courseid: $("#scourse").val(),
-                    class_id: $("#sclass").val()
+                    class_id: $("#sclass").val(),
+                    sid:$("#Sid").val()
                 },
                 success:function(data){
                     var tableHTML = "<table id='dataTable' class='display table table-striped border-info-subtle table-bordered table-hovered rounded shadow'><thead class='table-dark'><th class='text-center'>Roll No</th><th class='text-center'>Name</th><th class='text-center'>Sid</th><th class='text-center'>Class</th><th class='text-center'>status</th></thead><tbody class='text-center'>";
@@ -329,17 +354,7 @@
                 error:function(){
                     alert("error");
                 }
-            }).done(function(data) {
-                    table.rows().every(function() {
-                        var rowData = this.data(); 
-                        var status = rowData[4];
-                        if (status == '<p class="btn btn-success m-auto" value="1">present</p>') {
-                            this.select();
-                        }
-                    });
-            }).fail(function() {
-                settings("bg-danger-subtle","text-danger","Failed to take attendance");
-            });
+            })
         }
         function initializeDataTable() {
             table = $("#dataTable").DataTable({
@@ -372,6 +387,25 @@
         event.preventDefault();
         document.body.classList.toggle('sb-sidenav-toggled');
     });
+    // Example starter JavaScript for disabling form submissions if there are invalid fields
+(() => {
+  'use strict'
+
+  // Fetch all the forms we want to apply custom Bootstrap validation styles to
+  const forms = document.querySelectorAll('.needs-validation')
+
+  // Loop over them and prevent submission
+  Array.from(forms).forEach(form => {
+    form.addEventListener('submit', event => {
+      if (!form.checkValidity()) {
+        event.preventDefault()
+        event.stopPropagation()
+      }
+
+      form.classList.add('was-validated')
+    }, false)
+  })
+})()
 </script>
 </body>
 </html>

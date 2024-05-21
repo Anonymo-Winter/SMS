@@ -8,13 +8,17 @@
                                 Dashboard
                             </a>
                             <div class="sb-sidenav-menu-heading">Manage Students</div>
-                            <a class="nav-link collapsed" href="takeAttendance.php" data-bs-toggle="collapse" data-bs-target="#collapsePages" aria-expanded="false" aria-controls="collapsePages">
-                                <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
+                            <a class="nav-link" href="takeAttendance.php">
+                                <div class="sb-nav-link-icon"><i class="fas fa-user"></i></div>
                                 Take Attendance
-                            </a>
+                            </a> 
                             <a class="nav-link" href="viewStudents.php">
                                 <div class="sb-nav-link-icon"><i class="fas fa-user"></i></div>
                                 View Class Attendance
+                            </a> 
+                            <a class="nav-link" href="viewStudentAttendance.php">
+                                <div class="sb-nav-link-icon"><i class="fas fa-user"></i></div>
+                                 Student Attendance
                             </a>          
                             
                             <div class="sb-sidenav-menu-heading">Addons</div>

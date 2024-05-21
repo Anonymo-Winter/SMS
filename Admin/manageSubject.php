@@ -20,15 +20,7 @@
     <meta name="author" content="" />
     <title>Manage Subjects</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" ></script>
-
-    <link href="./css/styles.css" rel="stylesheet" />
-    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
-
-    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.3/css/dataTables.dataTables.css" />
-    <script src="https://cdn.datatables.net/2.0.3/js/dataTables.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <?php include './include/linker.php' ?>
 
     <style>
         .form-select:active,
@@ -53,29 +45,32 @@
     <div id="layoutSidenav" class="sb-sidenav-toggled">
         <?php  include "./include/sidebar.php" ?> 
         <div id="layoutSidenav_content" class="bg-light-subtle">
-            <main class="container p-3">
-                <div class="row">
-                    <div class="col-md-8">
-                        <h3>Manage Subjects</h3>
-                        <nav class="breadcrumb">
-                            <a class="text-primary breadcrumb-item " href="index.php">Main</a>
-                            <span class="breadcrumb-item active" aria-current="page">Manage Subjects</span>
-                        </nav>
-                    </div>
+            <main class="container p-3 font-monospace">
+                <div class="row-md-5 d-flex justify-content-between">
+                    <h3 class="fw-bold">Manage Subjects</h3>
+                    <nav class="breadcrumb">
+                        <a class="nav-link text-primary breadcrumb-item" href="./index.php">Main</a>
+                        <span class="breadcrumb-item active" aria-current="page">Manage Subjects</span>
+                    </nav>
                 </div>
                 <?php 
-                    if((isset($_GET["action"]) && isset($_GET["id"])) && $_GET["action"]=="edit")
-                    {
-                        $btn = "Update";
-                        $formid = "updateSubject";
-                        $id1 = $_GET["id"];
-                        try{
+                    try {
+                        if (isset($_GET["action"], $_GET["id"]) && $_GET["action"] == "edit") {
+                            $btn = "Update";
+                            $formid = "updateSubject";
+                            $id1 = $_GET["id"];
                             $sql = "Select * from Subjects where id='".$id1."'";
                             $sql = mysqli_query($conn,$sql);
-                            $result = mysqli_fetch_array($sql);
-                        }catch(Exception $e){
-                            echo "<script>alert('unknown Error !')</script>";
+                            if($sql)
+                            {
+                                $result = mysqli_fetch_array($sql);
+                            }
+                            else {
+                                echo "<script>Swal.fire('We\'re sorry, but we couldn\'t update your information. Please try again.','Something went wrong. Please try again!','warning')</script>";
+                            }
                         }
+                    }catch (Exception $e) {
+                            echo "<script>Swal.fire('We\'re sorry, but we couldn\'t update your information. Please try again.','Something went wrong. Please try again!','error')</script>";
                     }
                 ?>
                 <div class="row p-4">
@@ -84,16 +79,16 @@
                                 <form id="<?php if(!isset($formid)) echo 'addSubject'; else echo 'updateSubject'; ?>">
                                     <?php if(isset($formid)) echo "<input name='update' value='update' id='update' hidden> <input name='id' id='id' value='$id1' hidden>";?>
                                     <div class="mb-3">
-                                        <label for="dept" class="form-label">Department</label>
+                                        <label for="dept" class="form-label">Department<span class="text-danger">*</span> :</label>
                                         <select class="form-select" name="dept" id="dept" >
                                         <option value="" selected>--select one--</option>
                                         <?php 
-                                            $dep = "select dept_name from department";
+                                            $dep = "select * from department";
                                             $res_dep = mysqli_query($conn,$dep);
                                             while($dep_row = $res_dep->fetch_assoc())
                                             {
                                         ?>
-                                            <option value="<?php echo $dep_row['dept_name']?>" <?php if(isset($result) && $result['dept']==$dep_row['dept_name']) echo "selected"?> > <?php echo $dep_row['dept_name']?></option>";
+                                            <option value="<?php echo $dep_row['depId']?>" <?php if(isset($result) && $result['dept']==$dep_row['depId']) echo "selected"?> > <?php echo $dep_row['dept_name']?></option>";
                                         <?php
                                             }
                                         ?>
@@ -101,11 +96,11 @@
                                     </div>
                                     <div class="mb-3">
                                         <label for="courseId" class="form-label">Course Id<span class="fw-bolder text-danger">*</span> :</label>
-                                        <input type="text" class="form-control" name="courseId" id="courseId" aria-describedby="helpId" placeholder="" />
+                                        <input type="text" class="form-control" name="courseId" id="courseId" aria-describedby="helpId" placeholder=""  value="<?php if(isset($result)) echo $result['Course_id'];?>"/>
                                     </div>
                                     <div class="mb-3">
                                         <label for="courseName" class="form-label">Course Name<span class="fw-bolder text-danger">*</span> :</label>
-                                        <input type="text" class="form-control" name="courseName" id="courseName" aria-describedby="helpId" placeholder="" />
+                                        <input type="text" class="form-control" name="courseName" id="courseName" aria-describedby="helpId" placeholder="" value="<?php if(isset($result)) echo $result['Course_name'];?>"/>
                                     </div>
                                     
                                     <div class="text-end">
@@ -172,15 +167,16 @@
                     data: { id: CourseId ,action:"delete"},
                     success: function(response) {
                         if(response == 1){
-                            settings("bg-success-subtle","text-success","Course deleted successfully!");
-                            loadTable();
+                            settings("bg-success-subtle","text-success","successfully deleted!");
                         }
                         else{
-                            settings("bg-warning-subtle","text-warning","Error Occured while deleting student.");
+                            Swal.fire("Error Occured!","Oops!,Something went wrong. Failed complete the operation. Please try again later","error");
                         }
+                        loadTable();
+                        alert("here");
                     },
                     error: function() {
-                        settings("bg-danger-subtle","text-danger","Error occurred while deleting student.");
+                        Swal.fire("Error Occured!","Oops! Something went wrong. Please try again later","error");
                     }
                 });
             }
@@ -193,21 +189,29 @@
                 type : "POST",
                 data:{courseId:$("#courseId").val().toUpperCase(),dept:$("#dept").val().toUpperCase(),courseName:$("#courseName").val().toUpperCase()},
                 beforeSend : function(){
-                    $("#submit-btn").val("Saving..");
+                    $("#submit-btn").val("saving..");
                     $("#submit-btn").attr("disabled","disabled");
                 },
                 success : function(data){
                     if(data == 1){
-                        settings("bg-success-subtle","text-success","Data Inserted Successfully!");
+                        settings("bg-success-subtle","text-success","Data inserted successfully!");
                         $("#addSubject").trigger("reset");
                         loadTable();
                     }
                     else{
-                        settings("bg-warning-subtle","text-warning","Invalid Data! Try Again.");
+                        Swal.fire(
+                            "Error occured!",
+                            data,
+                            "warning"
+                        );                    
                     }
                 },
                 error:function(data){
-                    settings("bg-danger-subtle","text-danger","Error Occured While Inserting Data ! Data! Try Again.");
+                    Swal.fire(
+                        "Error occured!",
+                        "Something went wrong. unable allocate teacher!",
+                        "error"
+                    );
                 }
             });
             $("#submit-btn").val("Save");
@@ -227,18 +231,22 @@
                 data:{courseId:$("#courseId").val().toUpperCase(),dept:$("#dept").val().toUpperCase(),courseName:$("#courseName").val().toUpperCase(),id:$("#id").val(),update:$("#update").val()},
                 success:function(data){
                     if(data == 1){
-                        settings("bg-success-subtle","text-success","Class added successfully!");
+                        settings("bg-success-subtle","text-success","Course updated successfully!");
                         loadTable();
-                        window.location.replace("./manageClass.php");
+                        window.location.replace("./manageSubject.php");
                     }
                     else{
-                        settings("bg-warning-subtle","text-warning","Error updating! Try Again.");
+                        Swal.fire("Error occured!",data,"error");
                     }
                     $("submit-btn").attr("disabled",false);
                     $("#submit-btn").val("Update");
                 },
                 error:function(){
-                    settings("bg-danger-subtle","text-danger","Error updating! Try Again.");
+                    Swal.fire("Error occured!","Something went wrong. unable allocate teacher!","error");
+                },
+                complete:function(){
+                    $("#submit-btn").attr("disabled",false);
+                    $("#submit-btn").val("Update");
                 }
             })
         });
@@ -248,27 +256,35 @@
                 type:"GET",
                 dataType:"json",
                 success:function(data){
-                    var tableHTML = "<table id='dataTable' class='display table table-bordered'><thead class='table-dark'><th class='text-center'>#</th><Th>Course Id</Th><th class='text-center'>Course Name</th><th class='text-center'>Dept</th><th class='text-center'>Edit</th><th class='text-center'>Delete</th></thead><tbody class='text-center'>";
+                    var tableHTML = "<table id='dataTable' class='display table table-bordered table-hover table-striped'><thead class='table-dark'><th class='text-center'>#</th><th class='text-center'>Course Id</th><th class='text-center'>Course Name</th><th class='text-center'>Dept</th><th class='text-center'>Edit</th><th class='text-center'>Delete</th></thead><tbody class='text-center'>";
                     data.forEach(function(row) {
                         tableHTML += "<tr>";
                         tableHTML += "<td class='text-center'>" + row.id + "</td>";
                         tableHTML += "<td>" + row.Course_id + "</td>";
                         tableHTML += "<td>" + row.Course_name + "</td>";
-                        tableHTML += "<td>" + row.dept + "</td>";
-                        tableHTML += "<td><a href='./manageClass.php?action=edit&id="+row.id+"' class='btn btn-primary btn-sm btn-edit' data-id='" + row.id + "'>Edit</a></td>";
+                        tableHTML += "<td>" + row.dept_name + "</td>";
+                        tableHTML += "<td><a href='./manageSubject.php?action=edit&id="+row.id+"' class='btn btn-primary btn-sm btn-edit' data-id='" + row.id + "'>Edit</a></td>";
                         tableHTML += "<td><button class='btn btn-danger btn-sm btn-delete' data-id='" + row.id + "'>Delete</button></td>";
                         tableHTML += "</tr>";
                     });
                     tableHTML += "</tbody></table>";
                     $("#mytable").html(tableHTML);
-                    $("#dataTable").DataTable({
-                        responsive:true,
-                        autoWidth:true,
-                        pagingType: 'simple_numbers',
+                    table = $("#dataTable").DataTable({
+                        responsive: true, 
+                        autoWidth: false,
+                        order: [[0, 'asc']],
+                        "createdRow": function(row, data, dataIndex){
+                            $(row).find('td:eq(0)').text(dataIndex + 1); 
+                            $(row).find('td:eq(0)').addClass("sino");
+                        },
                     });
                 },
                 error:function(){
-                    alert("error");
+                    Swal.fire(
+                        "Unable to Load table",
+                        "Something went wrong. Try again later!",
+                        "error"
+                    );
                 }
             });
         }

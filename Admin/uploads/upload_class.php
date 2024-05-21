@@ -86,7 +86,7 @@ function checkclassname($name){
 
 
 function checkdept($dept,$conn){
-    $stmt = "SELECT * FROM department where dept_name='$dept'";
+    $stmt = "SELECT * FROM department where depId='$dept'";
     $res = mysqli_query($conn,$stmt);
     if($res)
     {

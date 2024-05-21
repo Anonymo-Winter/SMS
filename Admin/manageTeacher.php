@@ -111,7 +111,7 @@
                                                 while($row = mysqli_fetch_assoc($dep_result))
                                                 {
                                             ?>
-                                                <option value="<?php echo $row['dept_name']?>" <?php if(isset($result) && $result['dept']==$row['dept_name']) echo "selected"?> > <?php echo $row['dept_name']?></option>";
+                                                <option value="<?php echo $row['depId']?>" <?php if(isset($result) && $result['dept']==$row['depId']) echo "selected"?> > <?php echo $row['dept_name']?></option>";
                                             <?php
                                                 }
                                             ?>
@@ -154,10 +154,14 @@
                         </form>
                     </div>
                 </div>
-                <div class="container-fluid p-4">
-                    <div class="container-fluid shadow border border-secondary rounded py-2">
-                        <div id="mytable" class="table table-responsive">
-                            <!-- table  -->
+                <div class="container-fluid showme mt-4">
+                    <div class="row">
+                        <div class="col">
+                            <div class="shadow border border-secondary rounded py-2">
+                                <div id="mytable" class="table-responsive p-3">
+                                    
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -187,11 +191,18 @@
 
         $('#subjects').select2();
         
-        // $(".class").hide();
+        $(".class").hide();
+
+        if($("#updateTeacher").length == 0)
+        {
+            $(".class").hide();
+        }
+        else{
+            $(".class").show();
+        }
 
         $("#dept").on("change",function(){
            var deptname = $("#dept").val();
-           $(".class").show();
            $.ajax({
                 url:'./fetch/fill_select_subjects.php',
                 type:"POST",
@@ -205,11 +216,12 @@
                     }
                     else if(data == "null")
                     {
-                        $(".cls-msg").show().html("<span class='text-center text-danger'>"+deptname+" branch has no active Subjects</span>");
+                        $(".cls-msg").show().html("<span class='text-center text-danger'>"+$("#dept option:selected").html()+" branch has no active Subjects</span>");
                         $(".class").hide();
                         $("#submit-btn").attr("disabled",true);
                     }
                     else{
+                        $(".class").show();
                         $(".cls-msg").html("").hide();
                         $("#subjects").html(data);
                         $("#submit-btn").attr("disabled",false);
@@ -340,14 +352,14 @@
                 type:"GET",
                 dataType:"json",
                 success:function(data){
-                    var tableHTML = "<table id='dataTable' class='display table table-bordered'><thead class='table-dark'><th class='text-center'>#</th><th class='text-center'>Teacher Name</th><th class='text-center'>Username</th><th class='text-center'>Password</th><th class='text-center'>dept</th><th class='text-center'>subjects</th><th class='text-center'>Edit</th><th class='text-center'>Delete</th></thead><tbody class='text-center'>";
+                    var tableHTML = "<table id='dataTable' class='display table table-bordered table-hover table-striped'><thead class='table-dark'><th class='text-center'>#</th><th class='text-center'>Teacher Name</th><th class='text-center'>Username</th><th class='text-center'>Password</th><th class='text-center'>dept</th><th class='text-center'>subjects</th><th class='text-center'>Edit</th><th class='text-center'>Delete</th></thead><tbody class='text-center'>";
                     data.forEach(function(row) {
                         tableHTML += "<tr>";
                         tableHTML += "<td class='text-center'>" + row.id + "</td>";
                         tableHTML += "<td>" + row.tname + "</td>";
                         tableHTML += "<td>" + row.user_name + "</td>";
                         tableHTML += "<td>" + row.password + "</td>";
-                        tableHTML += "<td>" + row.dept + "</td>";
+                        tableHTML += "<td>" + row.dept_name + "</td>";
                         tableHTML += "<td>" + row.subjects + "</td>";
                         tableHTML += "<td><a href='./manageTeacher.php?action=edit&id="+row.id+"' class='btn btn-primary btn-sm btn-edit' data-id='" + row.id + "'>Edit</a></td>";
                         tableHTML += "<td><button class='btn btn-danger btn-sm btn-delete' name='student' data-id='" + row.id + "'>Delete</button></td>";
@@ -355,10 +367,14 @@
                     });
                     tableHTML += "</tbody></table>";
                     $("#mytable").html(tableHTML);
-                    $("#dataTable").DataTable({
-                        responsive:true,
-                        autoWidth:true,
-                        pagingType: 'simple_numbers',
+                    table = $("#dataTable").DataTable({
+                        responsive: true, 
+                        autoWidth: false,
+                        order: [[0, 'asc']],
+                        "createdRow": function(row, data, dataIndex){
+                            $(row).find('td:eq(0)').text(dataIndex + 1); 
+                            $(row).find('td:eq(0)').addClass("sino");
+                        },
                     });
                 },
                 error:function(){
