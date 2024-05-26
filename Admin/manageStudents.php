@@ -4,7 +4,7 @@
         header("location: login.php");
         exit;
     }
-    include './include/config.php';
+    include '../config.php';
     if(!$conn){
         header("location: ./index.html");
     }
@@ -13,41 +13,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <meta name="description" content="" />
-    <meta name="author" content="" />
-    <title>Dashboard</title>
-
     <?php include './include/linker.php' ?>
-
-    <style>
-        .form-select:active,
-        .form-select:focus,
-        .form-control:active,
-        .form-control:focus{
-            outline:none;
-            box-shadow:none;
-        }
-        thead th{
-            text-align: center;
-        }
-        .btn-close-danger{
-            color:red;
-        }
-    </style>
 </head>
 <body class="sb-nav-fixed">
     <!-- navbar -->
-    <?php  include "./include/nav.php" ?>
+    <?php  include "../include/nav.php" ?>
     <!-- sidebar -->
     <div id="layoutSidenav" class="sb-sidenav-toggled">
         <?php  include "./include/sidebar.php" ?>
         <div id="layoutSidenav_content">
             <main class="container p-4 font-monospace">
                 <div class="row-md-5 d-flex justify-content-between">
-                    <h3 class="fw-bold">Dashboard</h3>
+                    <h3 class="fw-bold">Manage Students</h3>
                     <nav class="breadcrumb">
                         <a class="nav-link text-primary breadcrumb-item" href="./index.php">Main</a>
                         <span class="breadcrumb-item active" aria-current="page">Manage Students</span>
@@ -58,9 +35,9 @@
                     {
                         $btn = "Update";
                         $formid = "updateStudent";
-                        $id1 = $_GET["id"];
+                        $id1 = htmlspecialchars($_GET["id"]);
                         try{
-                            $sql = "Select * from students where Sid='{$id1}'";
+                            $sql = "Select * from students where Sid='$id1'";
                             $sql = mysqli_query($conn,$sql);
                             $result = mysqli_fetch_array($sql);
                         }catch(Exception $e){
@@ -75,17 +52,17 @@
                                     <?php if(isset($formid)) echo "<input name='update' value='update' id='update' hidden> <input name='id' id='id' value='$id1' hidden>";?>
                                     <div class="mb-3">
                                         <label for="sname" class="form-label">Name<span class="text-danger">*</span> :</label>
-                                        <input type="text" class="form-control" name="sname" id="sname" value="<?php if(isset($result['Sname'])) echo $result['Sname'];?>" aria-describedby="nameerr" required/>
+                                        <input type="text" class="form-control" name="sname" id="sname" value="<?php if(isset($result['Sname'])) echo htmlspecialchars($result['Sname']);?>" aria-describedby="nameerr" required/>
                                         <small id="nameerr" class="text-danger ms-2 d-none"></small>
                                     </div>
                                     <div class="mb-3">
                                         <label for="sid" class="form-label">Id<span class="text-danger">*</span> :</label>
-                                        <input type="text" class="form-control" name="sid" id="sid" value="<?php if(isset($result['Sid'])) echo $result['Sid'];?>" aria-describedby="iderr" required>
+                                        <input type="text" class="form-control" name="sid" id="sid" value="<?php if(isset($result['Sid'])) echo htmlspecialchars($result['Sid']);?>" aria-describedby="iderr" required>
                                         <small id="iderr" class="text-danger d-none"></small>
                                     </div>
                                     <div class="mb-3">
                                         <label for="srollno" class="form-label">Roll No<span class="text-danger">*</span> :</label>
-                                        <input type="text" class="form-control" name="srollno" id="srollno" value="<?php if(isset($result['Srollno'])) echo $result['Srollno'];?>" aria-describedby="iderr" required>
+                                        <input type="text" class="form-control" name="srollno" id="srollno" value="<?php if(isset($result['Srollno'])) echo htmlspecialchars($result['Srollno']);?>" aria-describedby="iderr" required>
                                         <small id="iderr" class="text-danger d-none"></small>
                                     </div>
                                     
@@ -102,7 +79,7 @@
                                                 while($row = mysqli_fetch_assoc($dep_result))
                                                 {
                                             ?>
-                                                <option value="<?php echo $row['depId']?>" <?php if(isset($result) && $dep_sql1['dept']==$row['depId']) echo "selected"?> > <?php echo $row['dept_name']?></option>";
+                                                <option value="<?php echo htmlspecialchars($row['depId'])?>" <?php if(isset($result) && $dep_sql1['dept']==$row['depId']) echo "selected"?> > <?php echo htmlspecialchars($row['dept_name'])?></option>";
                                             <?php
                                                 }
                                             ?>
@@ -119,7 +96,7 @@
                                                 while($row = mysqli_fetch_assoc($dep_result))
                                                 {
                                             ?>
-                                                <option value="<?php echo $row['Sclass']?>" <?php if(isset($result) && $result['Sclass']==$row['Sclass']) echo "selected"?> > <?php echo $row['Sclass']?></option>";
+                                                <option value="<?php echo htmlspecialchars($row['Sclass'])?>" <?php if(isset($result) && $result['Sclass']==$row['Sclass']) echo "selected"?> > <?php echo htmlspecialchars($row['Sclass'])?></option>";
                                             <?php
                                                 }
                                             ?>
@@ -137,6 +114,9 @@
                         <form id="uploadForm">
                             <div class="mb-3">
                                 <label for="file" class="form-label">Upload CSV File </label>
+                                <button type="button" class="btn" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="rollno,id,name,department no.,class name">
+                                    <i class="fa fa-info-circle" aria-hidden="true"></i>
+                                </button>
                                 <input type="file" name="file" class="form-control" id="file" aria-describedby="helpId"/>
                             </div>
                             <div class="mb-3">
@@ -172,7 +152,7 @@
         </div>
     </div>
 </div>
-            <?php include "./include/footer.php"; ?>
+            <?php include "../include/footer.php"; ?>
         </div>
     </div>
 </div>
@@ -326,12 +306,15 @@
                         loadTable();
                     }
                     else{
-                        settings("bg-danger-subtle","text-danger","Invalid Data! Try Again.");
+                        Swal.fire("Error occured!",data,"warning");
                     }
                 },
                 error:function(data){
-                    settings("bg-danger-subtle","text-danger","Error Occured While Inserting Data ! Data! Try Again.");
-                }
+                    Swal.fire(
+                        "Error occured!",
+                        "Something went wrong.Please try again later!",
+                        "error"
+                    );                }
             });
             $("#submit-btn").val("Submit");
             $("#submit-btn").attr("disabled",false);                    
@@ -382,7 +365,7 @@
         });
         function loadTable(){
             $.ajax({
-                url : "./fetch/fetchdata.php?action=Students",
+                url : "./fetch/fetchdata.php?action=students",
                 type:"GET",
                 dataType:"json",
                 success:function(data){
@@ -424,6 +407,8 @@
         event.preventDefault();
         document.body.classList.toggle('sb-sidenav-toggled');
     });
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
 </script>
 </body>
 </html>

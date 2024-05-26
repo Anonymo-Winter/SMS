@@ -1,16 +1,14 @@
 <?php 
-require_once '../include/config.php';
+require_once '../../config.php';
 
 if(isset($_GET["action"]) && $_GET["action"] == "individual")
 {
-    $classId = $_POST['class_id'];
-    $courseId = $_POST['courseid'];
-    $sid = $_POST["sid"];
+    $classId = htmlspecialchars($_POST['class_id']);
+    $courseId = htmlspecialchars($_POST['courseid']);
     $query = "SELECT s.*, sum(status) AS attendance_count
                 FROM attendance a
                 INNER JOIN students s ON s.Sid = a.Sid
-                WHERE a.Class_id = ? AND a.Course_id = ? 
-                AND a.Sid = '$sid'
+                WHERE a.CLass_id = ? AND a.Course_id = ? 
                 GROUP BY s.Sid";
 
         $stmt = mysqli_prepare($conn, $query);
@@ -31,8 +29,8 @@ if(isset($_GET["action"]) && $_GET["action"] == "individual")
 else
 {
     if (isset($_POST['class_id'], $_POST['courseid'])) {
-        $classId = $_POST['class_id'];
-        $courseId = $_POST['courseid'];
+        $classId = htmlspecialchars($_POST['class_id']);
+        $courseId = htmlspecialchars($_POST['courseid']);
 
         $query = "SELECT s.*, sum(status) AS attendance_count
                 FROM attendance a

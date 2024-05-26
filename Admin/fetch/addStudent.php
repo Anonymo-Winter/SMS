@@ -1,34 +1,18 @@
 <?php
-require_once '../include/config.php';
+require_once '../../config.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        $error = 0;
-        function checkid($id){
-            $idpattern = '/^[S]\d{6}$/';
-            return preg_match($idpattern, $id);
-        }
-        function checkrollno($rollNo){
-            $idpattern = '/^\d{1,3}$/';
-            return preg_match($idpattern, $rollNo);
-        }
-        
-        function checkname($name){
-            $namepattern = '/^[a-zA-Z ]+$/';
-            return preg_match($namepattern, $name);
-        }
-        
         if (empty(trim($_POST["sname"])) || empty(trim($_POST["sid"])) || empty(trim($_POST["sclass"])) || empty(trim($_POST["dept"])) || empty(trim($_POST["srollno"]))) 
         {
-            $error++;
-            echo "Please complete all required fields";
+            echo "To proceed please fill all mandatory fields!";
         }
         else 
         {
-            $name = trim($_POST["sname"]);
-            $id = trim($_POST["sid"]);
-            $class = trim($_POST["sclass"]);
-            $dept = trim($_POST["dept"]);
-            $rollno = trim($_POST["srollno"]);
+            $name = htmlspecialchars(trim($_POST["sname"]));
+            $id = htmlspecialchars(trim($_POST["sid"]));
+            $class = htmlspecialchars(trim($_POST["sclass"]));
+            $dept = htmlspecialchars(trim($_POST["dept"]));
+            $rollno = htmlspecialchars(trim($_POST["srollno"]));
             if(checkrollno($rollno) && checkid($id) && checkname(strtoupper($name))) {
                 if (isset($_POST["update"])){
                     $sql = "UPDATE `students` SET `Sname`=?,`Sclass`=?,`Sid`=?,`Srollno`=?,`dept`=? WHERE `Sid`=?";
@@ -38,10 +22,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         if ($stmt->execute()) {
                             echo 1;
                         } else {
-                            echo 0;
+                            echo "Unable to update. Please try again!";
                         }
                     }catch(Exception $e){
-                        echo '';
+                        echo 'Potential issues: duplicate entry or invalid data. please try again';
                     }
                 }
                 else {
@@ -52,19 +36,34 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         if ($stmt->execute()) {
                             echo 1;
                         } else {
-                            echo 0;
-                        }
+                        echo "Something went wrong. Please try again!";
+                    }
                     }catch(Exception $e)
                     {
-                        echo 0;
+                        echo 'Potential issues: duplicate entry or invalid data. please try again';
                     }
                 }
             }
             else{
-                echo 0;
+                echo "Invalid data. Please try again!";
             }
     }
 } else {
-    echo "Err 404 : Bad Gateways";
+    echo "Something went wrong. Please try agian later!";
 }
+
+function checkid($id){
+    $idpattern = '/^[S]\d{6,10}$/';
+    return preg_match($idpattern, $id);
+}
+function checkrollno($rollNo){
+    $idpattern = '/^\d{1,3}$/';
+    return preg_match($idpattern, $rollNo);
+}
+
+function checkname($name){
+    $namepattern = '/^[a-zA-Z ]+$/';
+    return preg_match($namepattern, $name);
+}
+
 ?>

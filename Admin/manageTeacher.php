@@ -4,7 +4,7 @@
         header("location: login.php");
         exit;
     }
-    require_once './include/config.php';
+    require_once '../config.php';
     if(!$conn){
         header("location: ./index.html");
     }
@@ -13,44 +13,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <meta name="description" content="" />
-    <meta name="author" content="" />
-    <title>Manage Teacher</title>
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" ></script>
-
-    <link href="./css/styles.css" rel="stylesheet" />
-    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
-
-    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.3/css/dataTables.dataTables.css" />
-    <script src="https://cdn.datatables.net/2.0.3/js/dataTables.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-beta.1/css/select2.min.css" rel="stylesheet">
-
-
-    <style>
-        .form-select:active,
-        .form-select:focus,
-        .form-control:active,
-        .form-control:focus{
-            outline:none;
-            box-shadow:none;
-        }
-        thead th{
-            text-align: center;
-        }
-        .btn-close-danger{
-            color:red;
-        }
-    </style>
+    <?php include "./include/linker.php"?>
 </head>
 <body class="sb-nav-fixed">
     <!-- navbar -->
-    <?php  include "./include/nav.php" ?>
+    <?php  include "../include/nav.php" ?>
     <!-- sidebar -->
     <div id="layoutSidenav" class="sb-sidenav-toggled">
         <?php  include "./include/sidebar.php" ?>
@@ -141,19 +108,6 @@
                             </div>
                         </div>
                 </div>
-                <div class="row-md-4 px-4">
-                    <div class="row p-4 border border-secondary shadow rounded">
-                        <form id='file-submit'>
-                            <div class="mb-3">
-                                <label for="csv_file" class="form-label">Upload CSV File </label>
-                                <input type="file" class="form-control" name="csv_file" id="csv_file" aria-describedby="helpId" placeholder="" />
-                            </div>
-                            <div class="mb-3">
-                                <button type="submit" class="btn btn-primary"> Submit </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
                 <div class="container-fluid showme mt-4">
                     <div class="row">
                         <div class="col">
@@ -181,7 +135,7 @@
         </div>
     </div>
 </div>
-            <?php include "./include/footer.php"?>
+            <?php include "../include/footer.php"?>
         </div>
     </div>
 </div>
@@ -228,7 +182,7 @@
                     }
                 },
                 error:function(){
-                    alert("Some error occured while fetching Subjects!");
+                    Swal.fire("Error Occured!","Oops! Something went wrong. Please try again later","error");
                 }
            }) 
         });
@@ -251,11 +205,11 @@
                             loadTable();
                         }
                         else{
-                            settings("bg-warning-subtle","text-warning","Error Occured while deleting teacher.");
+                            Swal.fire("Error Occured!","Oops!,Something went wrong. Failed complete the operation. Please try again later","error");
                         }
                     },
                     error: function() {
-                        settings("bg-danger-subtle","text-danger","Error occurred while deleting teacher.");
+                        Swal.fire("Error Occured!","Oops! Something went wrong. Please try again later","error");
                     }
                 });
             }
@@ -287,14 +241,22 @@
                         settings("bg-success-subtle","text-success","Teacher added succesffully");
                         $("#addTeacher").trigger("reset");
                         $("#subjects").val([]).trigger('change');
-                        loadTable();
                     }
                     else{
-                        settings("bg-warning-subtle","text-warning","Invalid Data! Try Again.");
+                        Swal.fire(
+                            "Error occured!",
+                            data,
+                            "warning"
+                        );                   
                     }
+                    loadTable();
                 },
                 error:function(data){
-                    settings("bg-danger-subtle","text-danger","Error Occured While Inserting Data ! Data! Try Again.");
+                    Swal.fire(
+                        "Error occured!",
+                        "Something went wrong. unable allocate teacher!",
+                        "error"
+                    );                
                 }
             });
             $("#submit-btn").val("Save");
@@ -332,11 +294,11 @@
                         window.location.replace("./manageTeacher.php");
                     }
                     else{
-                        settings("bg-warning-subtle","text-warning","Error updating! Try Again.");
+                        Swal.fire("Error occured!",data,"error");
                     }
                 },
                 error:function(){
-                    settings("bg-danger-subtle","text-danger","Error updating! Try Again.");
+                    Swal.fire("Error occured!","Something went wrong. unable allocate teacher!","error");
                 },
                 complete:function(){
                     $("#submit-btn").attr("disabled",false);
@@ -378,7 +340,11 @@
                     });
                 },
                 error:function(){
-                    alert("error");
+                    Swal.fire(
+                        "Unable to Load table",
+                        "Something went wrong. Try again later!",
+                        "error"
+                    );                
                 }
             });
         }
@@ -393,7 +359,6 @@
         document.body.classList.toggle('sb-sidenav-toggled');
     });
 </script>
-<!-- <script src="./script.js"></script> -->
 </body>
 </html>
 <?php 

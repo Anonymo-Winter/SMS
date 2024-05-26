@@ -4,7 +4,7 @@
         header("location: login.php");
         exit;
     }
-    require_once './include/config.php';
+    require_once '../config.php';
     if(!$conn){
         header("location: ./index.html");
     }
@@ -14,44 +14,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <meta name="description" content="" />
-    <meta name="author" content="" />
-    <title>Dashboard</title>
-
-    <script src= "https://cdn.jsdelivr.net/npm/sweetalert2@9"> </script> 
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" ></script>
-
-    <link href="./css/styles.css" rel="stylesheet" />
-    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
-
-    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.3/css/dataTables.dataTables.css" />
-    <script src="https://cdn.datatables.net/2.0.3/js/dataTables.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
-
-    <style>
-        .form-select:active,
-        .form-select:focus,
-        .form-control:active,
-        .form-control:focus{
-            outline:none;
-            box-shadow:none;
-        }
-        thead th{
-            text-align: center;
-        }
-        .btn-close-danger{
-            color:red;
-        }
-    </style>
+    <?php include "../include/linker.php"?>
 </head>
 <body class="sb-nav-fixed">
     <!-- navbar -->
-    <?php  include "./include/nav.php" ?>
+    <?php  include "../include/nav.php" ?>
     <!-- sidebar -->
     <div id="layoutSidenav" class="sb-sidenav-toggled">
         <?php  include "./include/sidebar.php" ?> 
@@ -65,19 +32,19 @@
                         </nav>
                     </div>
                 <?php 
-                    if((isset($_GET["action"]) && isset($_GET["id"])) && $_GET["action"]=="edit")
-                    {
-                        $btn = "Update";
-                        $formid = "updateCr";
-                        $id1 = $_GET["id"];
-                        try{
-                            $sql = "Select * from class_crs where id='".$id1."'";
-                            $sql = mysqli_query($conn,$sql);
-                            $result = mysqli_fetch_array($sql);
-                        }catch(Exception $e){
-                            echo "<script>alert('unknown Error !')</script>";
+                    try{
+                        if((isset($_GET["action"]) && isset($_GET["id"])) && $_GET["action"]=="edit")
+                        {
+                            $btn = "Update";
+                            $formid = "updateCr";
+                            $id1 = $_GET["id"];
+                                $sql = "Select * from class_crs where id='".$id1."'";
+                                $sql = mysqli_query($conn,$sql);
+                                $result = mysqli_fetch_array($sql);
                         }
-                    }
+                    }catch(Exception $e){
+                            echo "<script>Swal.fire('Error occured!','database error','error')</script>";
+                        }
                 ?>
                 <div class="row p-4">
                         <div class="card shadow border border-secondary">
@@ -86,7 +53,7 @@
                                     <?php if(isset($formid)) echo "<input name='update' value='update' id='update' hidden> <input name='id' id='id' value='$id1' hidden>";?>
                                     <div class="mb-3">
                                         <label for="sid" class="form-label">Student ID<span class="text-danger fw-bolder">*</span> :</label>
-                                        <input type="text" class="form-control" name="sid" id="sid" value="<?php if(isset($result['Sid'])) echo $result['Sid'];?>" aria-describedby="nameerr" required/>
+                                        <input type="text" class="form-control" name="sid" id="sid" value="<?php if(isset($result['Sid'])) echo htmlspecialchars($result['Sid']);?>" aria-describedby="nameerr" required/>
                                         <small id="nameerr" class="text-danger ms-2 d-none"></small>
                                     </div>
                                     <div class="mb-3">
@@ -99,7 +66,7 @@
                                             while($dep_row = $res_dep->fetch_assoc())
                                             {
                                         ?>
-                                            <option value="<?php echo $dep_row['depId'];?>" <?php if(isset($result) && $result['dept']==$dep_row['depId']) echo "selected";?> > <?php echo $dep_row['dept_name'];?></option>";
+                                            <option value="<?php echo htmlspecialchars($dep_row['depId']);?>" <?php if(isset($result) && $result['dept']==$dep_row['depId']) echo "selected";?> > <?php echo htmlspecialchars($dep_row['dept_name']);?></option>";
                                         <?php
                                             }
                                         ?>
@@ -118,7 +85,7 @@
                                                     while($cls_row = $res_cls->fetch_assoc())
                                                     {
                                             ?>
-                                                    <option value="<?php echo $cls_row['Sclass'];?>" <?php if(isset($result) && $result['Sclass']==$cls_row['Sclass']) echo "selected"; ?> > <?php echo $cls_row['Sclass']?></option>";
+                                                    <option value="<?php echo htmlspecialchars($cls_row['Sclass']);?>" <?php if(isset($result) && $result['Sclass']==$cls_row['Sclass']) echo "selected"; ?> > <?php echo htmlspecialchars($cls_row['Sclass'])?></option>";
                                             <?php
                                                 }}
                                             ?>
@@ -135,7 +102,10 @@
                     <div class="row p-4 border border-secondary shadow rounded">
                         <form id="uploadForm">
                             <div class="mb-3">
-                                <label for="file" class="form-label">Upload CSV File </label>
+                                <label for="file" class="form-label me-0">Upload CSV File </label>
+                                <button type="button" class="btn" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="id,,department no.,class name">
+                                    <i class="fa fa-info-circle" aria-hidden="true"></i>
+                                </button>
                                 <input type="file" name="file" class="form-control" id="file" aria-describedby="helpId"/>
                             </div>
                             <div class="mb-3">
@@ -166,7 +136,7 @@
         </div>
     </div>
 </div>
-            <?php include './include/footer.php'?>
+            <?php include '../include/footer.php'?>
         </div>
     </div>
 </div>
@@ -204,22 +174,6 @@
                         ); 
                         $("#uploadForm").trigger("reset");
                         loadTable();
-                    }
-                    else if(response == "error")
-                    {
-                        Swal.fire( 
-                            'Error', 
-                            'Error occured', 
-                            'warning' 
-                        );
-                    }
-                    else if(response == -1)
-                    {
-                        Swal.fire( 
-                            'Error', 
-                            'Invalid File', 
-                            'error' 
-                        );
                     }
                     else
                     {
@@ -324,10 +278,10 @@
                 },
                 error:function(data){
                     Swal.fire(
-                            "Error",
-                            "Error Occured While Inserting Data! Data! Try Again.",
-                            "error"
-                    )
+                        "Error occured!",
+                        "Something went wrong. unable allocate teacher!",
+                        "error"
+                    );
                 }
             });
             $("#submit-btn").val("Save");
@@ -348,23 +302,14 @@
                     if(data == 1){
                         settings("bg-success-subtle","text-success","<i class='fas fa-circle-check mx-2'></i>CR Data Inserted Successfully!");
                         $("#addCr").trigger("reset");
-                        loadTable();
                         window.location.replace("./manageLeader.php");
                     }
                     else{
-                        Swal.fire(
-                            "Error",
-                            data,
-                            "error"
-                        )
+                        Swal.fire("Error occured!",data,"error");
                     }
                 },
                 error:function(data){
-                    Swal.fire(
-                            "Error",
-                            "Error Occured While Inserting Data! Data! Try Again.",
-                            "error"
-                    )
+                    Swal.fire("Error occured!","Something went wrong. unable allocate teacher!","error");
                 }
             });
             $("#submit-btn").val("Save");
@@ -401,7 +346,11 @@
                     });
                 },
                 error:function(){
-                    alert("error");
+                    Swal.fire(
+                        "Unable to Load table",
+                        "Something went wrong. Try again later!",
+                        "error"
+                    );
                 }
             });
         }
@@ -415,8 +364,10 @@
         event.preventDefault();
         document.body.classList.toggle('sb-sidenav-toggled');
     });
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+
 </script>
-<!-- <script src="./script.js"></script> -->
 </body>
 </html>
 <?php 

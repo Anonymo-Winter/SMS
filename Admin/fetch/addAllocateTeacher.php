@@ -1,5 +1,5 @@
 <?php
-require_once '../include/config.php';
+require_once '../../config.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (!isset($_POST["sclass"],$_POST["dept"],$_POST["courseid"],$_POST["tid"]) || empty(trim($_POST["tid"])) ||
@@ -9,9 +9,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
         else 
         {
-            $tid = trim($_POST["tid"]);
-            $sclass = trim($_POST["sclass"]);
-            $Course_id = trim($_POST["courseid"]);
+            $tid = htmlspecialchars(trim($_POST["tid"]));
+            $sclass = htmlspecialchars(trim($_POST["sclass"]));
+            $Course_id = htmlspecialchars(trim($_POST["courseid"]));
             if (isset($_POST["update"])){
                 $sql = "UPDATE `allocate_teacher` SET `Sclass`=?,`Course_id`=? WHERE `tid`=?";
                 $stmt = $conn->prepare($sql);

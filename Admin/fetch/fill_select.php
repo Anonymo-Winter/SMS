@@ -1,21 +1,21 @@
 <?php 
-    require_once "../include/config.php";
+    require_once "../../config.php";
     if($_SERVER["REQUEST_METHOD"] == "POST")
     {
-        $dept = trim($_POST["dept"]);
+        $dept = htmlspecialchars(trim($_POST["dept"]));
         if($dept == "")
         {
-            echo 0;
+            echo "To proceed please fill all mandatory fields!";     
         }
         else{
-            $sql = "SELECT * FROM classes where dept = '{$dept}'";
+            $sql = "SELECT * FROM `classes` where dept = '{$dept}'";
             $result = mysqli_query($conn,$sql);
             $str="<option value=''>--select class--</option>";
             if($result->num_rows > 0)
             {
                 while($row = $result->fetch_assoc())
                 {
-                    $str .= "<option value='$row[Sclass]'>{$row['Sclass']}</option>";
+                    $str .= "<option value='".htmlspecialchars($row['Sclass'])."'>".htmlspecialchars($row['Sclass'])."</option>";
                 }
             }
             else{

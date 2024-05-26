@@ -1,10 +1,10 @@
 <?php 
     session_start();
-    if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
+    if(!isset($_SESSION["loggedin"],$_SESSION["teacher"]) || $_SESSION["loggedin"] !== true && $_SESSION["teacher"]!==true){
         header("location: login.php");
         exit;
     }
-    require_once './include/config.php';
+    require_once '../config.php';
     if(!$conn)
     {
         header("location: ./index.html");
@@ -14,64 +14,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <meta name="description" content="" />
-    <meta name="author" content="" />
-    <title>Teacher - Dashboard</title>
-        
-        
-    <script src= "https://cdn.jsdelivr.net/npm/sweetalert2@9"> </script> 
-
-    
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="./css/styles.css">
-    <!-- jquery -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" ></script>
-    
-    <!-- data tables basic,buttons,select -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.5/css/dataTables.bootstrap5.css" />
-    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/3.0.2/css/buttons.dataTables.css" />
-    <link rel="stylesheet" href="https://cdn.datatables.net/select/2.0.1/css/select.bootstrap5.css" />
-
-    <!-- jquery js -->
-    <script src="https://cdn.datatables.net/2.0.3/js/dataTables.js"></script>
-    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.datatables.net/2.0.3/js/dataTables.js"></script>
-    <script src="https://cdn.datatables.net/2.0.5/js/dataTables.bootstrap5.js"></script>
-    <script src="https://cdn.datatables.net/select/2.0.1/js/dataTables.select.js"></script>
-    <script src="https://cdn.datatables.net/select/2.0.1/js/select.dataTables.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" ></script>
-
-
-    <style>
-        .form-select:active,
-        .form-select:focus,
-        .form-control:active,
-        .form-control:focus{
-            outline:none;
-            box-shadow:none;
-        }
-        .form-select,
-        .form-control,
-        input[type="date"]{
-            width:90%;
-        }
-        thead th{
-            text-align: center;
-        }
-        .form-control{
-            text-transform: uppercase;
-        }
-        .btn-close-danger{
-            color:red;
-        }
-    </style>
+    <?php include "../include/linker.php";?>
 </head>
 <body class="sb-nav-fixed">
     <!-- navbar -->
-    <?php  include "./include/nav.php" ?>
+    <?php  include "../include/nav.php" ?>
     <!-- sidebar -->
     <div id="layoutSidenav" class="sb-sidenav-toggled">
         <?php  include "./include/sidebar.php" ?>
@@ -85,10 +32,10 @@
                     </nav>
                 </div>
                 <?php 
-                    $teacher_class = "select distinct Sclass from allocate_teacher where tid = '{$_SESSION["id"]}'";
+                    $teacher_class = "select distinct Sclass from allocate_teacher where tid = ".htmlspecialchars($_SESSION["id"]);
                     $teacher_class_result = mysqli_query($conn,$teacher_class);
 
-                    $teacher_subject = "select distinct Course_id from allocate_teacher where tid = '{$_SESSION["id"]}'";
+                    $teacher_subject = "select distinct Course_id from allocate_teacher where tid = ".htmlspecialchars($_SESSION["id"]);
                     $teacher_subject_result = mysqli_query($conn,$teacher_subject);
                 ?>
 
@@ -151,7 +98,7 @@
                     </div>
                 </div>
             </main>
-            <?php include "./include/footer.php"?>
+            <?php include "../include/footer.php"?>
         </div>
     </div>
 </div>
@@ -184,30 +131,9 @@
         });
         $("#viewStudent").on("submit",function(e){
             e.preventDefault();
-            if($("#scourse").val().trim() != "" && $("#sclass").val().trim() != ""  && $("#Sid").val().trim() != ""  && $("#type option:selected").attr("value") != ""){
-                $.ajax({
-                    url:"./fetch/id_class.php",
-                    type:"POST",
-                    data:{sid:$("#Sid").val().trim(),sclass:$("#sclass").val().trim()},
-                    success:function(data){
-                        if(data)
-                        {
-                            $("viewStudent").trigger("reset");
-                            $(".showme").show();
-                            checkexist();
-                        }
-                        else{
-                            Swal.fire( 
-                            'Error', 
-                            'Invalid Student Id', 
-                            'error' 
-                        ); 
-                        }
-                    },
-                    error:function(){
-                        return 0;
-                    }
-                });
+            if($("#scourse").val().trim() != "" && $("#sclass").val().trim() != ""  && $("#Sid").val().trim() != ""  && $("#type").val().trim() != ""){
+                $("viewStudent").trigger("reset");
+                checkexist();
             }
             else{
                 Swal.fire( 
@@ -296,36 +222,45 @@
         }
         function loadFull(){
             $.ajax({
-                url : "./fetch/getclassAttendanceData.php?action=individual",
+                url : "./fetch/studentattendance.php",
                 type:"POST",
                 dataType:"json",
                 data:{
                     courseid: $("#scourse").val(),
                     class_id: $("#sclass").val(),
-                    sid: $("#Sid").val()
+                    sid: $("#Sid").val(),
                 },
                 success:function(data){
-                    var tableHTML = "<table id='dataTable' class='display table table-striped border-info-subtle table-bordered shadow table-hovered rounded'><thead class='table-dark'><th class='text-center'>Roll No</th><th class='text-center'>Name</th><th class='text-center'>Sid</th><th class='text-center'>Class</th><th class='text-center'>?/57</th></thead><tbody class='text-center'>";
-                    data.forEach(function(row1) {
-                        var status="<p class='btn btn-danger m-auto'>absent</p>";
-                        if(row1.status == 1)
-                        {
-                            status = "<p class='btn btn-success m-auto' value='1'>present</p>";
-                        }
-                        tableHTML += "<tr class='align-middle'>";
-                        tableHTML += "<td class='text-center'>" + row1.Srollno + "</td>";
-                        tableHTML += "<td>" + row1.Sname + "</td>";
-                        tableHTML += "<td>" + row1.Sid + "</td>";
-                        tableHTML += "<td>" + row1.Sclass + "</td>";
-                        tableHTML += "<td class='text-center'>"+row1.attendance_count+"</td>";  
-                        tableHTML += "</tr>";
-                    });
-                    tableHTML += "</tbody></table>";
-                    $("#mytable").html(tableHTML);
-                    initializeDataTable();
+                    if(data.error)
+                    {
+                        Swal.fire("Error occured",data.error,"warning");
+                        $(".showme").hide();
+                    }
+                    else{
+                        $(".showme").show();
+                        var tableHTML = "<table id='dataTable' class='display table table-striped border-info-subtle table-bordered shadow table-hovered rounded'><thead class='table-dark'><th class='text-center'>Roll No</th><th class='text-center'>Name</th><th class='text-center'>Sid</th><th class='text-center'>Class</th><th class='text-center'>Date</th><th>Status</th></thead><tbody class='text-center'>";
+                        data.forEach(function(row1) {
+                            var status="<p class='btn btn-danger m-auto'>absent</p>";
+                            if(row1.status == 1)
+                            {
+                                status = "<p class='btn btn-success m-auto' value='1'>present</p>";
+                            }
+                            tableHTML += "<tr class='align-middle'>";
+                            tableHTML += "<td class='text-center'>" + row1.Srollno + "</td>";
+                            tableHTML += "<td>" + row1.Sname + "</td>";
+                            tableHTML += "<td>" + row1.Sid + "</td>";
+                            tableHTML += "<td>" + row1.Sclass + "</td>";
+                            tableHTML += "<td class='text-center'>"+row1.attendance_date+"</td>";  
+                            tableHTML += "<td>" + status + "</td>";
+                            tableHTML += "</tr>";
+                        });
+                        tableHTML += "</tbody></table>";
+                        $("#mytable").html(tableHTML);
+                        initializeDataTable();
+                    }
                 },
                 error:function(){
-                    alert("errorx");
+                    alert("error");
                 }
             })
         }
@@ -341,27 +276,35 @@
                     sid:$("#Sid").val()
                 },
                 success:function(data){
-                    var tableHTML = "<table id='dataTable' class='display table table-striped border-info-subtle table-bordered table-hovered rounded shadow'><thead class='table-dark'><th class='text-center'>Roll No</th><th class='text-center'>Name</th><th class='text-center'>Sid</th><th class='text-center'>Class</th><th class='text-center'>status</th></thead><tbody class='text-center'>";
-                    data.forEach(function(row1) {
-                        var status="<p class='btn btn-danger m-auto'>absent</p>";
-                        if(row1.status == 1)
-                        {
-                            status = "<p class='btn btn-success m-auto' value='1'>present</p>";
-                        }
-                        tableHTML += "<tr class='align-middle'>";
-                        tableHTML += "<td class='text-center'>" + row1.Srollno + "</td>";
-                        tableHTML += "<td>" + row1.Sname + "</td>";
-                        tableHTML += "<td>" + row1.Sid + "</td>";
-                        tableHTML += "<td>" + row1.Sclass + "</td>";
-                        tableHTML += "<td id='1'>" + status + "</td>";     
-                        tableHTML += "</tr>";
-                    });
-                    tableHTML += "</tbody></table>";
-                    $("#mytable").html(tableHTML);
-                    initializeDataTable();
+                    if(data.error)
+                    {
+                        Swal.fire("Error occured",data.error,"warning");
+                        $(".showme").hide();
+                    }
+                    else{
+                        $(".showme").show();
+                        var tableHTML = "<table id='dataTable' class='display table table-striped border-info-subtle table-bordered table-hovered rounded shadow'><thead class='table-dark'><th class='text-center'>Roll No</th><th class='text-center'>Name</th><th class='text-center'>Sid</th><th class='text-center'>Class</th><th class='text-center'>status</th></thead><tbody class='text-center'>";
+                        data.forEach(function(row1) {
+                            var status="<p class='btn btn-danger m-auto'>absent</p>";
+                            if(row1.status == 1)
+                            {
+                                status = "<p class='btn btn-success m-auto' value='1'>present</p>";
+                            }
+                            tableHTML += "<tr class='align-middle'>";
+                            tableHTML += "<td class='text-center'>" + row1.Srollno + "</td>";
+                            tableHTML += "<td>" + row1.Sname + "</td>";
+                            tableHTML += "<td>" + row1.Sid + "</td>";
+                            tableHTML += "<td>" + row1.Sclass + "</td>";
+                            tableHTML += "<td id='1'>" + status + "</td>";     
+                            tableHTML += "</tr>";
+                        });
+                        tableHTML += "</tbody></table>";
+                        $("#mytable").html(tableHTML);
+                        initializeDataTable();
+                    }
                 },
                 error:function(){
-                    alert("error");
+                    Swal.fire("Error occured","Something went wrong. Please try again later!","warning");
                 }
             })
         }

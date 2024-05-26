@@ -4,53 +4,21 @@
         header("location: login.php");
         exit;
     }
-    require_once './include/config.php';
+    require_once '../config.php';
     if(!$conn){
         header("location: ./index.html");
     }
     else{
-
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <meta name="description" content="" />
-    <meta name="author" content="" />
-    <title>Dashboard</title>
-    <script src= "https://cdn.jsdelivr.net/npm/sweetalert2@9"> </script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" ></script>
-
-    <link href="./css/styles.css" rel="stylesheet" />
-    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
-
-    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.3/css/dataTables.dataTables.css" />
-    <script src="https://cdn.datatables.net/2.0.3/js/dataTables.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
-
-    <style>
-        .form-select:active,
-        .form-select:focus,
-        .form-control:active,
-        .form-control:focus{
-            outline:none;
-            box-shadow:none;
-        }
-        thead th{
-            text-align: center;
-        }
-        .btn-close-danger{
-            color:red;
-        }
-    </style>
+    <?php include "../include/linker.php"?>
 </head>
 <body class="sb-nav-fixed">
     <!-- navbar -->
-    <?php  include "./include/nav.php" ?>
+    <?php  include "../include/nav.php" ?>
     <!-- sidebar -->
     <div id="layoutSidenav" class="sb-sidenav-toggled">
         <?php  include "./include/sidebar.php" ?> 
@@ -148,7 +116,7 @@
         </div>
     </div>
 </div>
-            <?php include "./include/footer.php";?>
+            <?php include "../include/footer.php";?>
         </div>
     </div>
 </div>
@@ -170,29 +138,13 @@
                     $("#form-submit").attr("disabled","disabled");
                 },
                 success: function(response) {
-                    if(response == "success")
+                    if(response == 1)
                     {
                         Swal.fire( 
                             'Success', 
                             'Data Submitted', 
                             'success' 
                         ); 
-                    }
-                    else if(response == "error")
-                    {
-                        Swal.fire( 
-                            'Error', 
-                            'Error occured', 
-                            'warning' 
-                        );
-                    }
-                    else if(response == -1)
-                    {
-                        Swal.fire( 
-                            'Error', 
-                            'Invalid File', 
-                            'error' 
-                        );
                     }
                     else
                     {
@@ -205,7 +157,7 @@
                     loadTable();
                 },
                 error: function() {
-                    alert('Error uploading file');
+                    Swal.fire("Error Occured!","Oops! Something went wrong. Please try again later","error");
                 },
                 complete:function(){
                         $("#form-submit").val("Submit");
@@ -249,11 +201,7 @@
                         }
                     },
                     error: function() {
-                        Swal.fire(
-                            "Invalid data",
-                            "error: Error occured while deleting class, try again later!",
-                            "error"
-                        )
+                        Swal.fire("Error Occured!","Oops! Something went wrong. Please try again later","error");
                     }
                 });
             }
@@ -264,7 +212,7 @@
             $.ajax({
                 url : './fetch/addClass.php',
                 type : "POST",
-                data:{sclass:$("#sclass").val().toUpperCase(),dept:$("#dept").val().toUpperCase()},
+                data:{sclass:$("#sclass").val().toUpperCase(),dept:$("#dept option:selected").val().toUpperCase()},
                 beforeSend : function(){
                     $("#submit-btn").val("saving..");
                     $("#submit-btn").attr("disabled","disabled");
@@ -277,19 +225,18 @@
                     }
                     else{
                         Swal.fire(
-                            "Invalid data",
-                            "error: invalid class name",
-                            "error"
-                        )
+                            "Error occured!",
+                            data,
+                            "warning"
+                        );
                     }
                 },
                 error:function(data){
                         Swal.fire(
-                            "Invalid data",
-                            "error: Error occured while creating class, try again later!",
-                            "error"
-                        )
-                    settings("bg-danger-subtle","text-danger","Error Occured While Inserting Data ! Data! Try Again.");
+                        "Error occured!",
+                        "Something went wrong. unable allocate teacher!",
+                        "error"
+                    );
                 }
             });
             $("#submit-btn").val("Save");
@@ -307,18 +254,26 @@
                     $("#submit-btn").attr("disabled","disabled"); 
                 },
                 data:{sclass:$("#sclass").val().toUpperCase(),dept:$("#dept").val().toUpperCase(),id:$("#id").val(),update:$("#update").val()},
-                success:function(data){
+                success : function(data){
                     if(data == 1){
-                        settings("bg-success-subtle","text-success","Class added successfully!");
-                        loadTable();
-                        window.location.replace("./manageClass.php");
+                        Swal.fire("Success","Class updates successfully!","success");
+                        $("#addClass").trigger("reset");
+                        window.location.href = "./manageClass.php";
                     }
                     else{
-                        settings("bg-warning-subtle","text-warning","Error updating! Try Again.");
+                        Swal.fire(
+                            "Error occured!",
+                            data,
+                            "warning"
+                        );
                     }
                 },
-                error:function(){
-                    settings("bg-danger-subtle","text-danger","Error updating! Try Again.");
+                error:function(data){
+                        Swal.fire(
+                        "Error occured!",
+                        "Something went wrong. unable allocate teacher!",
+                        "error"
+                    );
                 },
                 complete:function(){
                     $("submit-btn").attr("disabled",false);
@@ -354,7 +309,11 @@
                     });
                 },
                 error:function(){
-                    alert("error");
+                    Swal.fire(
+                        "Unable to Load table",
+                        "Something went wrong. Try again later!",
+                        "error"
+                    );
                 }
             });
         }

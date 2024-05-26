@@ -1,10 +1,10 @@
 <?php 
     session_start();
-    if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
+    if(!isset($_SESSION["loggedin"],$_SESSION["teacher"]) || $_SESSION["loggedin"] !== true && $_SESSION["teacher"]!==true){
         header("location: login.php");
         exit;
     }
-    require_once './include/config.php';
+    require_once '../config.php';
     if(!$conn)
     {
         header("location: ./index.html");
@@ -14,65 +14,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <meta name="description" content="" />
-    <meta name="author" content="" />
-    <title>Teacher - Dashboard</title>
-
-    <!-- Bootstrap and css -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="./css/styles.css">
-
-    <!-- jquery -->
-    <script src= "https://cdn.jsdelivr.net/npm/sweetalert2@9"> </script> 
-
-    <!-- Sweet Alerts -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" ></script>
-    
-    <!-- CDN TABLES css -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.5/css/dataTables.bootstrap5.css" />
-    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/3.0.2/css/buttons.dataTables.css" />
-    <link rel="stylesheet" href="https://cdn.datatables.net/select/2.0.1/css/select.bootstrap5.css" />
-
-    <!-- CDN TABLES js -->
-    <script src="https://cdn.datatables.net/2.0.3/js/dataTables.js"></script>
-    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.datatables.net/2.0.3/js/dataTables.js"></script>
-    <script src="https://cdn.datatables.net/2.0.5/js/dataTables.bootstrap5.js"></script>
-    <script src="https://cdn.datatables.net/select/2.0.1/js/dataTables.select.js"></script>
-    <script src="https://cdn.datatables.net/select/2.0.1/js/select.dataTables.js"></script>
-    <script src="https://cdn.datatables.net/2.0.3/js/dataTables.js"></script>
-    <script src="https://cdn.datatables.net/2.0.5/js/dataTables.bootstrap5.js"></script>
-    <script src="https://cdn.datatables.net/select/2.0.1/js/dataTables.select.js"></script>
-    <script src="https://cdn.datatables.net/select/2.0.1/js/select.dataTables.js"></script>
-    <script src="https://cdn.datatables.net/buttons/3.0.2/js/dataTables.buttons.js"></script>
-    <script src="https://cdn.datatables.net/buttons/3.0.2/js/buttons.dataTables.js"></script>
-
-    <style>
-        .form-select:active,
-        .form-select:focus,
-        .form-control:active,
-        .form-control:focus{
-            outline:none;
-            box-shadow:none;
-        }
-        .form-select,
-        input[type="date"]{
-            width:90%;
-        }
-        thead th{
-            text-align: center;
-        }
-        .btn-close-danger{
-            color:red;
-        }
-    </style>
+    <?php include "../include/linker.php";?>
 </head>
 <body class="sb-nav-fixed">
     <!-- navbar -->
-    <?php  include "./include/nav.php" ?>
+    <?php  include "../include/nav.php" ?>
     <!-- sidebar -->
     <div id="layoutSidenav" class="sb-sidenav-toggled">
         <?php  include "./include/sidebar.php" ?>
@@ -153,14 +99,14 @@
                                     
                                 </div>
                                 <div class="d-flex justify-content-center mt-3">
-                                    <button class="btn btn-success shadow my-2" id="attendance-btn" value="Take Attendance">Take Attendance</button>
+                                    <input type="submit" class="btn btn-success shadow my-2" id="attendance-btn" value="Take Attendance">
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </main>
-            <?php include "./include/footer.php"?>
+            <?php include "../include/footer.php"?>
         </div>
     </div>
 </div>
@@ -207,9 +153,12 @@
                     {
                         loadTable();
                     }
+                    else{
+                        Swal.fire("Error occured!","Something went wrong.Unable fetch data.Please try again later!","warning");
+                    }
                 },
                 error: function () {
-                    settings("bg-danger-subtle", "text-danger", "Error occurred while checking class existence");
+                    Swal.fire("Error occured!","Oops!,Something went wrong.Please try again later","error");
                     $(".showme").hide(); 
                 }
             });
@@ -247,7 +196,11 @@
                     initializeDataTable();
                 },
                 error:function(){
-                    alert("error");
+                    Swal.fire(
+                        "Unable to Load table",
+                        "Something went wrong. Try again later!",
+                        "error"
+                    );
                 }
             }).done(function(data) {
                     table.rows().every(function() {
@@ -258,7 +211,11 @@
                         }
                     });
             }).fail(function() {
-                settings("bg-danger-subtle","text-danger","Failed to take attendance");
+                Swal.fire(
+                        "Error occured!",
+                        "Something went wrong. Try again later!",
+                        "error"
+                    );
             });
         }
         function loadTable(){
@@ -286,7 +243,11 @@
                     initializeDataTable();
                 },
                 error:function(){
-                    alert("error");
+                    Swal.fire(
+                        "Unable to Load table",
+                        "Something went wrong. Try again later!",
+                        "error"
+                    );
                 }
             })
         }
@@ -349,25 +310,21 @@
                     courseid: $("#scourse").val(),
                     class_id: $("#sclass").val()
                 },
+                beforeSend:function(){
+                    $("#attendance-btn").val("saving..");
+                    $("#attendance-btn").attr("disabled",true);
+                },
                 success:function(data)
                 {
                     if(data == 1)
                     {
                         Swal.fire( 
                             'Success', 
-                            'Attendance Saved', 
+                            'Attendance saved successfully', 
                             'success'
                         ); 
                         // checkexist();
                         loadExisting();
-                    }
-                    else if(data == 0)
-                    {
-                        Swal.fire( 
-                            'Error', 
-                            'Error Occured', 
-                            'success'
-                        ); 
                     }
                     else{
                         Swal.fire(
@@ -378,8 +335,17 @@
                     }
                 },
                 error:function(){
-                    alert("error");
+                    Swal.fire(
+                        "Error occured!",
+                        "Something went wrong. Try again later!",
+                        "error"
+                    );                
+                },
+                complete:function(){
+                    $("#attendance-btn").val("take attendance");
+                    $("#attendance-btn").attr("disabled",false);
                 }
+
             });
         }
         var liveToast = new bootstrap.Toast(document.getElementById('liveToast'));

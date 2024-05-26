@@ -1,12 +1,12 @@
 <?php
-require_once '../include/config.php';
+require_once '../../config.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $error = 0;
         if (empty(trim($_POST["sid"])) || empty(trim($_POST["sclass"])) || empty(trim($_POST["dept"]))) 
         {
             $error++;
-            echo "Please complete all required fields";
+            echo "To proceed please fill all mandatory fields!";
         }
         else 
         {
@@ -52,7 +52,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 } 
 else {
-    echo "Unkown error!";
+    echo "Oops something went wrong. Try again later!!";
 }
 
 function checkstudent($id,$class,$conn){

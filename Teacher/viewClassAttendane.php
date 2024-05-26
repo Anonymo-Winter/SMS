@@ -1,10 +1,10 @@
 <?php 
     session_start();
-    if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
+    if(!isset($_SESSION["loggedin"],$_SESSION["teacher"]) || $_SESSION["loggedin"] !== true && $_SESSION["teacher"]!==true){
         header("location: login.php");
         exit;
     }
-    require_once './include/config.php';
+    require_once '../config.php';
     if(!$conn)
     {
         header("location: ./index.html");
@@ -14,58 +14,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <meta name="description" content="" />
-    <meta name="author" content="" />
-    <title>Teacher - Dashboard</title>
-        
-        
-    <script src= "https://cdn.jsdelivr.net/npm/sweetalert2@9"> </script> 
-
-    
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="./css/styles.css">
-    <!-- jquery -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" ></script>
-    
-    <!-- data tables basic,buttons,select -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.5/css/dataTables.bootstrap5.css" />
-    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/3.0.2/css/buttons.dataTables.css" />
-    <link rel="stylesheet" href="https://cdn.datatables.net/select/2.0.1/css/select.bootstrap5.css" />
-
-    <!-- jquery js -->
-    <script src="https://cdn.datatables.net/2.0.3/js/dataTables.js"></script>
-    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.datatables.net/2.0.3/js/dataTables.js"></script>
-    <script src="https://cdn.datatables.net/2.0.5/js/dataTables.bootstrap5.js"></script>
-    <script src="https://cdn.datatables.net/select/2.0.1/js/dataTables.select.js"></script>
-    <script src="https://cdn.datatables.net/select/2.0.1/js/select.dataTables.js"></script>
-
-    <style>
-        .form-select:active,
-        .form-select:focus,
-        .form-control:active,
-        .form-control:focus{
-            outline:none;
-            box-shadow:none;
-        }
-        .form-select,
-        input[type="date"]{
-            width:90%;
-        }
-        thead th{
-            text-align: center;
-        }
-        .btn-close-danger{
-            color:red;
-        }
-    </style>
+    <?php include "../include/linker.php";?>
 </head>
 <body class="sb-nav-fixed">
     <!-- navbar -->
-    <?php  include "./include/nav.php" ?>
+    <?php  include "../include/nav.php" ?>
     <!-- sidebar -->
     <div id="layoutSidenav" class="sb-sidenav-toggled">
         <?php  include "./include/sidebar.php" ?>
@@ -141,7 +94,7 @@
                     </div>
                 </div>
             </main>
-            <?php include "./include/footer.php"?>
+            <?php include "../include/footer.php"?>
         </div>
     </div>
 </div>
@@ -161,11 +114,11 @@
             if($("#type").val() == "bydate")
             {
                 $(".dated").show();
-                checkexist();
+                one();
             }
             else if($("#type").val() == "overall"){
                 $(".dated").hide();
-                checkexist();
+                one();
             }
             else{
                 $(".dated").hide();
@@ -175,16 +128,18 @@
             $(".date").text($("#tdate").val())
             checkexist();
         });
-        
-        $("#sclass,#scourse,#type").on("change",function(e){
-            if($("#scourse").val().trim() != "" && $("#sclass").val().trim() != "" && $("#type option:selected").attr("val") != ""){
-                $(".showme").show();
-                checkexist();
-            }
-            else{
-                $(".showme").hide();
-            }
-        });
+        one();
+        function one(){
+            $("#sclass,#scourse,#type").on("change",function(e){
+                if($("#scourse").val().trim() != "" && $("#sclass").val().trim() != "" && $("#type").val().trim() != ""){
+                    $(".showme").show();
+                    checkexist();
+                }
+                else{
+                    $(".showme").hide();
+                }
+            });
+        }
 
         function checkexist() {
             $.ajax({
@@ -211,7 +166,11 @@
                     }
                 },
                 error: function () {
-                    alert("Error occurred while checking class existence");
+                    Swal.fire(
+                        "Error occured",
+                        "Something went wrong. Try again later!",
+                        "error"
+                    );
                     $(".showme").hide(); 
                 }
             });
@@ -247,7 +206,11 @@
                     initializeDataTable();
                 },
                 error:function(){
-                    alert("error");
+                    Swal.fire(
+                        "Unable to Load table",
+                        "Something went wrong. Try again later!",
+                        "error"
+                    );
                 }
             }).done(function(data) {
                     table.rows().every(function() {
@@ -291,7 +254,11 @@
                     initializeDataTable();
                 },
                 error:function(){
-                    alert("errorx");
+                    Swal.fire(
+                        "Unable to Load table",
+                        "Something went wrong. Try again later!",
+                        "error"
+                    );
                 }
             })
         }

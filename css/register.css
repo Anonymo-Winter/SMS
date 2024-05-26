@@ -1,0 +1,67 @@
+.total {
+    height: 97vh;
+    width: 90%;
+    max-width: 1200px;
+    min-width: 300px;
+    margin: 0 auto;
+    border: 1px solid black;
+    display: flex;
+    justify-content: center;
+    transform: scale(0.9);
+}
+body{
+    background-color: #f1ebeb;
+}
+
+input{
+    height:3rem;
+}
+.bg-holder {
+    height: 100%;
+    width: 100%;
+    background-image: url("../imgs/sidepic.jpg");
+    background-size:cover;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.logo-title {
+    letter-spacing: 2px;
+    font-weight:bolder;
+}
+
+.data {
+    display: none;
+}
+
+
+
+
+.form{
+    align-self: center;
+    justify-self: center;
+    width: 80%;
+}
+
+.form-control:focus,
+.form-control:active {
+    outline: none;
+    box-shadow: none;
+}
+
+@media (max-width: 800px) {
+    .left {
+        display: none;
+    }
+}
+.msg{
+    color:red;
+}
+
+#show{
+    position: absolute;
+    right:10px;
+    transform: scale(1.4);
+    align-self: center;
+    z-index:100;
+}

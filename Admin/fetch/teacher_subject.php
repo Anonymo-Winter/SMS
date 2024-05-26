@@ -1,15 +1,15 @@
 <?php 
-    require_once "../include/config.php";
+    require_once "../../config.php";
     if($_SERVER["REQUEST_METHOD"] == "POST")
     {
-        $tid = trim($_POST["tid"]);
+        $tid = htmlspecialchars(trim($_POST["tid"]));
         if(empty(trim($tid)))
         {
-            echo 0;
+            echo "To proceed please fill all mandatory fields!";
         }
         else{
             $str = "";
-            $sql = "SELECT * FROM teachers where id = '{$tid}'";
+            $sql = "SELECT * FROM `teachers` where id = '{$tid}'";
             $result = mysqli_query($conn,$sql);
             if($result->num_rows > 0)
             {

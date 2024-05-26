@@ -162,6 +162,15 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 <script>
     $(document).ready(function(){
+        // $('input[type=radio][name=role]').change(function() {
+        //     if (this.value === 'teacher') {
+        //     $('#teacherForm').show();
+        //     $('#studentForm').hide();
+        //     } else if (this.value === 'student') {
+        //     $('#studentForm').show();
+        //     $('#teacherForm').hide();
+        //     }
+        // }); 
         $("#uname").focus();
         $("form small").hide();
         function checkuname(){   

@@ -4,7 +4,7 @@
         header("location: login.php");
         exit;
     }
-    require_once './include/config.php';
+    require_once '../config.php';
     if(!$conn)
     {
         header("location: ./index.html");
@@ -14,34 +14,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <meta name="description" content="" />
-    <meta name="author" content="" />
-    <title>Dashboard</title>
-
-    <?php include './include/linker.php' ?>
-
-    <style>
-        .form-select:active,
-        .form-select:focus,
-        .form-control:active,
-        .form-control:focus{
-            outline:none;
-            box-shadow:none;
-        }
-        thead th{
-            text-align: center;
-        }
-        .btn-close-danger{
-            color:red;
-        }
-    </style>
+    <?php include '../include/linker.php' ?>
 </head>
 <body class="sb-nav-fixed">
     <!-- navbar -->
-    <?php  include "./include/nav.php" ?>
+    <?php  include "../include/nav.php" ?>
     <!-- sidebar -->
     <div id="layoutSidenav" class="sb-sidenav-toggled">
         <?php  include "./include/sidebar.php" ?>
@@ -179,19 +156,6 @@
                             </div>
                         </div>
                 </div>
-                <div class="row-md-4 px-4">
-                    <div class="row p-4 border border-secondary shadow rounded">
-                        <form id='file-submit'>
-                            <div class="mb-3">
-                                <label for="file" class="form-label">Upload CSV File<span class='text-danger fw-bolder'>*</span> :</label>
-                                <input type="file" class="form-control" name="file" id="file" aria-describedby="helpId" placeholder="" />
-                            </div>
-                            <div class="mb-3">
-                                <button type="submit" class="btn btn-primary"> Submit </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
                 <div class="container-fluid showme mt-4">
                     <div class="row">
                         <div class="col">
@@ -219,7 +183,7 @@
         </div>
     </div>
 </div>
-            <?php include "./include/footer.php"?>
+            <?php include "../include/footer.php"?>
         </div>
     </div>
 </div>

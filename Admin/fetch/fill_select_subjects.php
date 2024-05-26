@@ -1,20 +1,20 @@
 <?php 
-    require_once "../include/config.php";
+    require_once "../../config.php";
     if($_SERVER["REQUEST_METHOD"] == "POST")
     {
-        $dept = trim($_POST["dept"]);
+        $dept = htmlspecialchars(trim($_POST["dept"]));
         if(empty($dept))
         {
-            echo 0;
+            echo "To proceed please fill all mandatory fields!";
         }
         else{
-            $sql = "SELECT * FROM subjects where dept = '{$dept}'";
+            $sql = "SELECT * FROM `subjects` where dept = '{$dept}'";
             $result = mysqli_query($conn,$sql);
             if($result->num_rows>0)
             {
                 while($row = $result->fetch_assoc())
                 {
-                    $str .= "<option value='$row[Course_name]'>{$row['Course_name']}</option>";
+                    $str .= "<option value='".htmlspecialchars($row['Course_name'])."'>".htmlspecialchars($row['Course_name'])."</option>";
                 }
             }
             else{

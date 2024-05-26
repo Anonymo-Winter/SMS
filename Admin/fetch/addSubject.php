@@ -1,5 +1,5 @@
 <?php
-require_once '../include/config.php';
+require_once '../../config.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (empty(trim($_POST["courseId"])) || empty(trim($_POST["dept"])) || empty(trim($_POST["courseName"]))) 

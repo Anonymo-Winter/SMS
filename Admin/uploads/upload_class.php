@@ -1,5 +1,5 @@
 <?php
-require_once "../include/config.php";
+require_once "../../config.php";
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_FILES['file']) && $_FILES['file']['error'] == UPLOAD_ERR_OK) {
         $uploadFile = $_FILES["file"]["tmp_name"];
@@ -49,16 +49,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             }
                         }
                     } else {
-                        echo "Error Occured!";
+                        echo "Oops!,Something went wrong. Failed complete the operation. Please try again later";
                     }
                 }
                 if(!$good && $errors==false)
                 {
-                    echo "success";
+                    echo 1;
                 }
             }
             catch(Exception){
-                echo "error";
+                echo "Oops!,Something went wrong. Failed complete the operation. Please try again later";
             }
             $conn->commit();
             $stmt->close();
@@ -66,7 +66,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $conn->close();
         }
     } else {
-        echo "Invalid File!";
+        echo "Oops!,Something went wrong. Failed complete the operation. Please try again later";
     }
 }
 

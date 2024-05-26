@@ -1,10 +1,10 @@
 <?php 
     session_start();
-    if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
-        header("location: login.php");
+    if(!isset($_SESSION["loggedin"],$_SESSION["teacher"]) || $_SESSION["loggedin"] !== true && $_SESSION["teacher"]!==true){
+        header("location: ./login.php");
         exit;
     }
-    require_once './include/config.php';
+    require_once '../config.php';
     if(!$conn)
     {
         header("location: ./index.html");
@@ -14,58 +14,38 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <meta name="description" content="" />
-    <meta name="author" content="" />
-    <title>Dashboard - SMS</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" ></script>
-
-    <link href="./css/styles.css" rel="stylesheet" />
-    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
-
-    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.3/css/dataTables.dataTables.css" />
-    <script src="https://cdn.datatables.net/2.0.3/js/dataTables.js"></script>
-
-    <style>
-        .form-control:active,
-        .form-control:focus{
-            outline:none;
-            box-shadow:none;
-        }
-    </style>
+    <?php include "../include/linker.php";?>
 </head>
 <body class="sb-nav-fixed">
-    <!-- navbar -->
-    <?php  include "./include/nav.php" ?>
+    <?php  include "../include/nav.php" ?>
 
-    <?php 
-            $students = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(*) as total_students FROM STUDENTS"));
+    <?php
+        try{
+            $students = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(*) as total_students FROM STUDENTS s,allocate_teacher a where a.Sclass=s.Sclass and tid=".htmlspecialchars($_SESSION["id"])));
             $students = $students["total_students"];
 
             $teachers = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(*) as total_teachers FROM teachers"));
             $teachers = $teachers["total_teachers"];
-
-            $classes = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(*) as total_classes FROM CLASSES"));
+            $classes = mysqli_fetch_assoc(mysqli_query($conn,"SELECT count(DISTINCT Sclass) as total_classes FROM allocate_teacher where tid = ".htmlspecialchars($_SESSION['id'])));
             $classes = $classes["total_classes"];
 
-            $classe_cr = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(*) as total_crs FROM CLASS_CRS"));
+            $classe_cr = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(*) as total_crs FROM class_crs s,allocate_teacher a where a.Sclass=s.Sclass and tid=".htmlspecialchars($_SESSION["id"])));
             $classe_cr = $classe_cr["total_crs"];
-            
 
+            $subjects = mysqli_fetch_assoc(mysqli_query($conn,"SELECT count(DISTINCT Course_id) as total_subjects FROM allocate_teacher where tid = ".htmlspecialchars($_SESSION['id'])));
+            $subjects = $subjects["total_subjects"];
+        }
+        catch(Exception $e)
+        {
+            echo "<script>Swal.fire('We\'re sorry, but we couldn\'t update your information. Please try again.','Something went wrong. Please try again!','error')</script>";
+        }
     ?>
-
-    <!-- sidebar -->
     <div id="layoutSidenav" class="sb-sidenav-toggled">
-
         <?php  include "./include/sidebar.php" ?> 
-
         <div id="layoutSidenav_content">
             <main class="container p-4 font-monospace">
                 <div class="row-md-4 d-flex justify-content-between">
-                    <h3>Dashboard</h3>
+                    <h3 class="fw-bold">Dashboard</h3>
                     <nav class="breadcrumb">
                         <a class="breadcrumb-item" href="index.php">Main</a>
                         <span class="breadcrumb-item active" aria-current="page">Dashboard</span>
@@ -125,7 +105,7 @@
                         <div class="row align-items-center">
                             <div class="col mr-2">
                                 <div class="text-xs font-weight-bold text-uppercase text-muted mb-1">Subjects</div>
-                                <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">12300</div>
+                                <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800"><?php echo $subjects?></div>
                             </div>
                             <div class="col-auto">
                                 <i class="fas fa-chalkboard fa-2x text-danger"></i>
@@ -134,27 +114,11 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-xl-3 col-md-6 mb-4">
-                    <div class="card p-2 shadow border border-secondary-subtle">
-                        <div class="card-body">
-                        <div class="row align-items-center">
-                            <div class="col mr-2">
-                                <div class="text-xs font-weight-bold text-uppercase text-muted mb-1">Attendance Taken</div>
-                                <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">34/52</div>
-                            </div>
-                            <div class="col-auto">
-                                <i class="fas fa-chalkboard fa-2x text-warning"></i>
-                            </div>
-                        </div>
-                        </div>
-                    </div>
-                </div>
             </main>
-            <?php include "./include/footer.php"?>
+            <?php include "../include/footer.php"?>
         </div>
     </div>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 <script>
     var sidebarToggle = document.getElementById('sidebarToggle');
     sidebarToggle.addEventListener('click', function (event) {

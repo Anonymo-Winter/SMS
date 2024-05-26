@@ -11,8 +11,8 @@
         <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                <li class="dropdown-item"><?php if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"]==true) echo
-                    htmlspecialchars($_SESSION["sid"]) ."-".htmlspecialchars($_SESSION["username"])?></li>
+                <li class="dropdown-item"><?php if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"]==true)
+                    echo htmlspecialchars($_SESSION["username"])?></li>
                     <div class="dropdown-divider"></div>
                     <li><a class="dropdown-item" href="./signout.php"><i class="text-danger fas fa-power-off me-3"></i>Logout</a></li>
             </ul>

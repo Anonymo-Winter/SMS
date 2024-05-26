@@ -1,9 +1,9 @@
 <?php
-    require_once '../include/config.php';
+    require_once '../../config.php';
     if($_SERVER["REQUEST_METHOD"]=="POST" && isset($_POST["sid"]) && isset($_POST["sclass"]))
     {
-        $sid = trim($_POST["sid"]);
-        $sclass = trim($_POST["sclass"]);
+        $sid = htmlspecialchars(trim($_POST["sid"]));
+        $sclass = htmlspecialchars(trim($_POST["sclass"]));
         $sql = "SELECT * FROM students WHERE Sid= '$sid' and Sclass='$sclass'";
         $query = mysqli_query($conn,$sql);
         if($query)

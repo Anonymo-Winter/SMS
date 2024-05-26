@@ -3,12 +3,12 @@
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $uname = htmlspecialchars(trim($_POST["uname"]));
-        $upass = htmlspecialchars(trim(($_POST["upass"])));
+        $upass = htmlspecialchars(trim($_POST["upass"]));
 
         if (empty($uname) && empty($upass)) {
             echo 0;
         } else {
-            $sql = "SELECT * FROM  `admin` WHERE username = ? AND password = ?";
+            $sql = "SELECT * FROM  teachers WHERE user_name = ? AND password = ?";
             $stmt = mysqli_prepare($conn, $sql);
             $stmt->bind_param("ss", $uname, $upass);    
             if ($stmt->execute()) {
@@ -17,8 +17,9 @@
                     $result = $result->fetch_assoc();
                     session_start();
                     $_SESSION["loggedin"] = true;
-                    $_SESSION["admin"] = true;
-                    $_SESSION["username"] = "adminbro";    
+                    $_SESSION["teacher"] = true;
+                    $_SESSION["username"] = $result["tname"];    
+                    $_SESSION["id"] = $result["id"];  
                     echo 1;                        
                 } else {
                     echo 'Failed to fetch data. try again later!';

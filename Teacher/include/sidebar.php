@@ -12,7 +12,7 @@
                                 <div class="sb-nav-link-icon"><i class="fas fa-user"></i></div>
                                 Take Attendance
                             </a> 
-                            <a class="nav-link" href="viewStudents.php">
+                            <a class="nav-link" href="viewClassAttendane.php">
                                 <div class="sb-nav-link-icon"><i class="fas fa-user"></i></div>
                                 View Class Attendance
                             </a> 
@@ -20,21 +20,11 @@
                                 <div class="sb-nav-link-icon"><i class="fas fa-user"></i></div>
                                  Student Attendance
                             </a>          
-                            
-                            <div class="sb-sidenav-menu-heading">Addons</div>
-                            <a class="nav-link" href="charts.html">
-                                <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
-                                Charts
-                            </a>
-                            <a class="nav-link" href="tables.html">
-                                <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
-                                Tables
-                            </a>
                         </div>
                     </div>
                     <div class="sb-sidenav-footer">
                         <div class="small">Logged in as:</div>
-                        <?php if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"]) echo $_SESSION["username"]?>
+                        <?php if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"]) echo htmlspecialchars($_SESSION["username"])?>
                     </div>
                 </nav>
             </div>

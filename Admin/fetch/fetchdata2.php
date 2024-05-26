@@ -1,10 +1,10 @@
 <?php
-require_once '../include/config.php';
+require_once '../../config.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST["action"])) {
-        $action = $_POST["action"];
-        $allowed_tables = ['Students', 'class_crs','classes','teachers','allocate_teacher']; 
+        $action = htmlspecialchars($_POST["action"]);
+        $allowed_tables = ['students', 'class_crs','classes','teachers','allocate_teacher']; 
         if (in_array($action, $allowed_tables)) {
             $sql = "select a.*,d.dept_name,t.tname from `$action` a,`classes` c,`department` d,`teachers` t where t.id =a.tid and c.dept = d.depId and a.`Sclass`=c.`Sclass`";
             $result = mysqli_query($conn, $sql);
@@ -18,12 +18,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 echo json_encode(array("error" => "Failed to fetch data from the database."));
             }
         } else {
-            echo json_encode(array("error" => "Invalid table name."));
+            echo json_encode(array("error" => "Something went wrong. Please try again."));
         }
     } else {
-        echo json_encode(array("error" => "No action specified."));
+        echo json_encode(array("error" => "Something went wrong. Please try again."));
     }
 } else {
-    echo json_encode(array("error" => "502 Bad Gateway"));
+    echo json_encode(array("error" => "Something went wrong. Please try again."));
 }
 ?>

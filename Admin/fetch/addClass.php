@@ -1,12 +1,10 @@
 <?php
-require_once '../include/config.php';
+require_once '../../config.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        $error = 0;
-        if (empty(trim($_POST["sclass"])) || empty(trim($_POST["dept"]))) 
+        if(!isset($_POST["sclass"]) || !isset($_POST["dept"]) || empty(trim($_POST["sclass"])) || empty(trim($_POST["dept"]))) 
         {
-            $error++;
-            echo "Err 404 : Bad Gateways";
+            echo "To proceed please fill all mandatory fields!";
         } 
         else 
         {
@@ -20,10 +18,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     if ($stmt->execute()) {
                         echo 1;
                     } else {
-                        echo 0;
+                        echo "Unable to update. Please try again!";
                     }
                 }catch(Exception $e){
-                    echo '';
+                    echo 'Potential issues: duplicate entry or invalid data. please try again';
                 }
             }
             else {
@@ -34,15 +32,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     if ($stmt->execute()) {
                         echo 1;
                     } else {
-                        echo 0;
+                        echo "Something went wrong. Please try again!";
                     }
                 }catch(Exception $e)
                 {
-                    echo 0;
+                    echo 'Potential issues: duplicate entry or invalid data. please try again';
                 }
             }
     }
 } else {
-    echo "Err 404 : Bad Gateways";
+    echo "Critical error occured!";
 }
 ?>

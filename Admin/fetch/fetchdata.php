@@ -1,11 +1,11 @@
 <?php
-require_once '../include/config.php';
+require_once '../../config.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "GET") {
     if (isset($_GET["action"])) {
         $action = htmlspecialchars($_GET["action"]);
 
-        $allowed_tables = ['Students', 'class_crs','classes','teachers','subjects']; // replace with actual table names
+        $allowed_tables = ['students', 'class_crs','classes','teachers','subjects']; // replace with actual table names
         if (in_array($action, $allowed_tables)) {
             $sql = "SELECT a.*,d.dept_name FROM `$action` a, `department` d WHERE a.dept = d.depId or a.dept is null";
             $result = mysqli_query($conn, $sql);
@@ -20,12 +20,12 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
                 echo json_encode(array("error" => "Failed to fetch data from the database."));
             }
         } else {
-            echo json_encode(array("error" => "Invalid table name."));
+            echo json_encode(array("error" => "Something went wrong. Please try again."));
         }
     } else {
-        echo json_encode(array("error" => "No action specified."));
+        echo json_encode(array("error" => "Something went wrong. Please try again."));
     }
 } else {
-    echo json_encode(array("error" => "502 Bad Gateway"));
+    echo json_encode(array("error" => "Something went wrong. Please try again."));
 }
 ?>
