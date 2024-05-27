@@ -1,6 +1,6 @@
 <?php 
     session_start();
-    if(!isset($_SESSION["loggedin"],$_SESSION["teacher"]) || $_SESSION["loggedin"] !== true && $_SESSION["teacher"]!==true){
+    if(!isset($_SESSION["teacher_loggedin"],$_SESSION["teacher_loggedin"]) || $_SESSION["teacher_loggedin"] !== true){
         header("location: login.php");
         exit;
     }
@@ -35,7 +35,7 @@
                     $teacher_class = "select distinct Sclass from allocate_teacher where tid = '{$_SESSION["id"]}'";
                     $teacher_class_result = mysqli_query($conn,$teacher_class);
 
-                    $teacher_subject = "select distinct Course_id from allocate_teacher where tid = '{$_SESSION["id"]}'";
+                    $teacher_subject = "SELECT DISTINCT s.Course_id, s.* FROM allocate_teacher a JOIN subjects s ON s.Course_id = a.Course_id WHERE a.tid = '{$_SESSION["id"]}'";
                     $teacher_subject_result = mysqli_query($conn,$teacher_subject);
                 ?>
                 <div class="row p-4">
@@ -48,7 +48,7 @@
                                         <select class="form-select" name="sclass" id="sclass">
                                             <option value="" selected>--select class--</option>
                                             <?php while($row = mysqli_fetch_assoc($teacher_class_result)) { ?>
-                                                <option value="<?php echo $row['Sclass']?>"><?php echo $row['Sclass']?></option>
+                                                <option value="<?php echo $row['Sclass']?>"><?php echo htmlspecialchars($row['Sclass'])?></option>
                                             <?php } ?>
                                         </select>
                                     </div>
@@ -57,7 +57,7 @@
                                         <select class="form-select" name="scourse" id="scourse">
                                             <option value="" selected>--select subject--</option>
                                             <?php while($row = mysqli_fetch_assoc($teacher_subject_result)) { ?>
-                                                <option value="<?php echo $row['Course_id']?>"><?php echo $row['Course_id']?></option>
+                                                <option value="<?php echo $row['Course_id']?>"><?php echo htmlspecialchars($row['Course_name'])?></option>
                                             <?php } ?>
                                         </select>
                                     </div>

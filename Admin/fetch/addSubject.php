@@ -14,7 +14,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if (isset($_POST["update"])){
                 $sql = "UPDATE `subjects` SET `Course_id`=?,`Course_name`=?,`dept`=? WHERE `id`=?";
                 $stmt = $conn->prepare($sql);
-                $stmt->bind_param("ssss", $courseId, $courseId,$dept,$_POST["id"]);
+                $stmt->bind_param("ssss", $courseId, $courseName,$dept,$_POST["id"]);
                 try{
                     if ($stmt->execute()) {
                         echo 1;

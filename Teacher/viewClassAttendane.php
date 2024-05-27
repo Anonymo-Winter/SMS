@@ -1,6 +1,7 @@
 <?php 
     session_start();
-    if(!isset($_SESSION["loggedin"],$_SESSION["teacher"]) || $_SESSION["loggedin"] !== true && $_SESSION["teacher"]!==true){
+    if(!isset($_SESSION["teacher_loggedin"],$_SESSION["teacher_loggedin"]) || $_SESSION["teacher_loggedin"] !== true){
+    
         header("location: login.php");
         exit;
     }

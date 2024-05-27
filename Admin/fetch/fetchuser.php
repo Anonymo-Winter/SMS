@@ -16,10 +16,9 @@
                 if ($result->num_rows == 1) {
                     $result = $result->fetch_assoc();
                     session_start();
-                    $_SESSION["loggedin"] = true;
-                    $_SESSION["admin"] = true;
-                    $_SESSION["username"] = "adminbro";    
-                    echo 1;                        
+                    $_SESSION["admin_loggedin"] = true;
+                    $_SESSION["admin_username"] = htmlspecialchars($result["username"]);    
+                    echo 1;
                 } else {
                     echo 'Failed to fetch data. try again later!';
                 }

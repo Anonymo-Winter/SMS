@@ -1,6 +1,6 @@
 <?php 
     session_start();
-    if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
+    if(!isset($_SESSION["admin_loggedin"]) || $_SESSION["admin_loggedin"] !== true){
         header("location: login.php");
         exit;
     }
@@ -36,7 +36,7 @@
                             $btn = "Update";
                             $formid = "updateSubject";
                             $id1 = $_GET["id"];
-                            $sql = "Select * from Subjects where id='".$id1."'";
+                            $sql = "Select * from subjects where id='".$id1."'";
                             $sql = mysqli_query($conn,$sql);
                             if($sql)
                             {
@@ -181,7 +181,7 @@
             $("#submit-btn").attr("disabled",false);                    
         });
 
-        $("#updateClass").on("submit",function(e){
+        $("#updateSubject").on("submit",function(e){
             e.preventDefault();
             $("submit-btn").attr("disabled",false);
             $.ajax({

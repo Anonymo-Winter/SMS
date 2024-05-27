@@ -1,6 +1,6 @@
 <?php 
     session_start();
-    if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
+    if(!isset($_SESSION["admin_loggedin"]) || $_SESSION["admin_loggedin"] !== true){
         header("location: login.php");
         exit;
     }
@@ -95,7 +95,6 @@
                                                 {
                                             ?>
                                                 <option value="<?php echo $row['Course_name']?>" <?php if(isset($result) && (stripos($result['subjects'],$row['Course_name'])!== false)) echo "selected"?> > <?php echo $row['Course_name']?></option>";
-                                                <!-- <option value="fine" selected>Option1</option> -->
                                             <?php
                                                 }
                                             ?>
@@ -226,9 +225,9 @@
                 type : "POST",
                 data:{
                         tname:$("#tname").val().toUpperCase(),
-                        uname:$("#uname").val().toUpperCase(),
+                        uname:$("#uname").val(),
                         tphone:$("#tphone").val().toUpperCase(),
-                        password:$("#passwd").val().toUpperCase(),
+                        password:$("#passwd").val(),
                         dept:$("#dept").val().toUpperCase(),
                         subject:selectedOpt.toString()
                     },
@@ -279,9 +278,9 @@
                 },
                 data:{
                         tname:$("#tname").val().toUpperCase(),
-                        uname:$("#uname").val().toUpperCase(),
+                        uname:$("#uname").val(),
                         tphone:$("#tphone").val().toUpperCase(),
-                        password:$("#passwd").val().toUpperCase(),
+                        password:$("#passwd").val(),
                         dept:$("#dept").val().toUpperCase(),
                         subject:selectedOpt.toString(),
                         id:$("#id").val(),

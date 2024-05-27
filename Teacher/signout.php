@@ -1,13 +1,18 @@
 <?php
 // Initialize the session
 session_start();
- 
-// Unset all of the session variables
-$_SESSION = array();
- 
-session_destroy();
- 
-// Redirect to login page
-header("location:  ./login.php");
+
+// Unset only the admin-specific session variables
+unset($_SESSION["teacher_loggedin"]);
+unset($_SESSION["teacher_username"]);
+unset($_SESSION["teacher_id"]);
+
+// Check if any session variables remain, if not, destroy the session
+if (empty($_SESSION)) {
+    session_destroy();
+}
+
+// Redirect to admin login page
+header("location: ./login.php");
 exit;
 ?>

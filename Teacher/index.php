@@ -1,6 +1,6 @@
 <?php 
     session_start();
-    if(!isset($_SESSION["loggedin"],$_SESSION["teacher"]) || $_SESSION["loggedin"] !== true && $_SESSION["teacher"]!==true){
+    if(!isset($_SESSION["teacher_loggedin"],$_SESSION["teacher_loggedin"]) || $_SESSION["teacher_loggedin"] !== true){
         header("location: ./login.php");
         exit;
     }
@@ -21,7 +21,7 @@
 
     <?php
         try{
-            $students = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(*) as total_students FROM STUDENTS s,allocate_teacher a where a.Sclass=s.Sclass and tid=".htmlspecialchars($_SESSION["id"])));
+            $students = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(*) as total_students FROM students s,allocate_teacher a where a.Sclass=s.Sclass and tid=".htmlspecialchars($_SESSION["id"])));
             $students = $students["total_students"];
 
             $teachers = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(*) as total_teachers FROM teachers"));
