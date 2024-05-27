@@ -188,7 +188,45 @@
     </div>
 </div>
 <script>
-    $(document).ready(function(){
+    function loadTable(){
+            $.ajax({
+                url : "./fetch/fetchdata2.php",
+                type:"POST",
+                data:{action:"allocate_teacher"},
+                dataType:"json",
+                success:function(data){
+                    var tableHTML = "<table id='dataTable' class='display table table-bordered'><thead class='table-dark'><th class='text-center'>#</th><th class='text-center'>Teacher Name</th><th class='text-center'>Class</th><th class='text-center'>Course</th><th class='text-center'>Edit</th><th class='text-center'>Delete</th></thead><tbody class='text-center'>";
+                    data.forEach(function(row) {
+                        tableHTML += "<tr>";
+                        tableHTML += "<td class='text-center sino'></td>"; 
+                        tableHTML += "<td>" + row.tname + "</td>";
+                        tableHTML += "<td>" + row.Sclass + "</td>";
+                        tableHTML += "<td>" + row.Course_id + "</td>";
+                        tableHTML += "<td><a href='./allocateTeacher.php?action=edit&id="+row.id+"' class='btn btn-primary btn-sm btn-edit' data-id='" + row.tid + "'>Edit</a></td>";
+                        tableHTML += "<td><button class='btn btn-danger btn-sm btn-delete' name='student' data-id='" + row.id + "'>Delete</button></td>";
+                        tableHTML += "</tr>";
+                    });
+                    tableHTML += "</tbody></table>";
+                    $("#mytable").html(tableHTML);
+                    table = $("#dataTable").DataTable({
+                        responsive: true, 
+                        autoWidth: false,
+                        order: [[0, 'asc']],
+                        "createdRow": function(row, data, dataIndex){
+                            $(row).find('td:eq(0)').text(dataIndex + 1); 
+                            $(row).find('td:eq(0)').addClass("sino");
+                        },
+                    });
+                },
+                error:function(){
+                    Swal.fire(
+                        "Unable to Load table",
+                        "Something went wrong. Try again later!",
+                        "error"
+                    );
+                }
+            });
+        }
         if($("#updateTeacher").length == 0)
         {
             $(".class").hide(); 
@@ -199,10 +237,8 @@
             $(".class").show(); 
             $("#crs_in").show();
         }
-
         $("#tec-msg").hide();
-        
-
+        $(document).ready(function(){
         $("form").on("change",function(){
             if($("#tname option:selected").val() !== "" && $("#dept option:selected").val()!== "" && $("#sclass option:selected").val()!== "" && $("#courseid option:selected").val() !== "")
             {
@@ -391,45 +427,6 @@
                 }
             });
         });
-        function loadTable(){
-            $.ajax({
-                url : "./fetch/fetchdata2.php",
-                type:"POST",
-                data:{action:"allocate_teacher"},
-                dataType:"json",
-                success:function(data){
-                    var tableHTML = "<table id='dataTable' class='display table table-bordered'><thead class='table-dark'><th class='text-center'>#</th><th class='text-center'>Teacher Name</th><th class='text-center'>Class</th><th class='text-center'>Course</th><th class='text-center'>Edit</th><th class='text-center'>Delete</th></thead><tbody class='text-center'>";
-                    data.forEach(function(row) {
-                        tableHTML += "<tr>";
-                        tableHTML += "<td class='text-center sino'></td>"; 
-                        tableHTML += "<td>" + row.tname + "</td>";
-                        tableHTML += "<td>" + row.Sclass + "</td>";
-                        tableHTML += "<td>" + row.Course_id + "</td>";
-                        tableHTML += "<td><a href='./allocateTeacher.php?action=edit&id="+row.id+"' class='btn btn-primary btn-sm btn-edit' data-id='" + row.tid + "'>Edit</a></td>";
-                        tableHTML += "<td><button class='btn btn-danger btn-sm btn-delete' name='student' data-id='" + row.id + "'>Delete</button></td>";
-                        tableHTML += "</tr>";
-                    });
-                    tableHTML += "</tbody></table>";
-                    $("#mytable").html(tableHTML);
-                    table = $("#dataTable").DataTable({
-                        responsive: true, 
-                        autoWidth: false,
-                        order: [[0, 'asc']],
-                        "createdRow": function(row, data, dataIndex){
-                            $(row).find('td:eq(0)').text(dataIndex + 1); 
-                            $(row).find('td:eq(0)').addClass("sino");
-                        },
-                    });
-                },
-                error:function(){
-                    Swal.fire(
-                        "Unable to Load table",
-                        "Something went wrong. Try again later!",
-                        "error"
-                    );
-                }
-            });
-        }
         loadTable();
         var liveToast = new bootstrap.Toast(document.getElementById('liveToast'));
     });

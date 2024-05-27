@@ -18,12 +18,6 @@
     <?php include "../include/linker.php" ?>
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet" href="../css/register.css">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Radio+Canada+Big:ital,wght@0,400..700;1,400..700&display=swap');
-        body{
-            font-family: "Radio Canada Big", sans-serif;
-        }
-    </style>
 </head>
 <body class="d-flex align-items-center justify-content-center vh-100 p-5">
     <div class="total d-flex justify-content-center shadow-lg bg-light rounded">

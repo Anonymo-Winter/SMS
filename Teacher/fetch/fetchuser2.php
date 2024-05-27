@@ -1,14 +1,12 @@
 <?php 
     require_once "../../config.php";
-
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $uname = htmlspecialchars(trim($_POST["uname"]));
-        $upass = htmlspecialchars(trim($_POST["upass"]));
-
-        if (empty($uname) && empty($upass)) {
+        $upass = htmlspecialchars(trim(($_POST["upass"])));
+        if (empty($uname) && empty($upass)){
             echo 0;
-        } else {
-            $sql = "SELECT * FROM  teachers WHERE user_name = ? AND password = ?";
+        } else{
+            $sql = "SELECT * FROM  `teachers` WHERE user_name = ? AND password = ?";
             $stmt = mysqli_prepare($conn, $sql);
             $stmt->bind_param("ss", $uname, $upass);    
             if ($stmt->execute()) {
@@ -16,11 +14,10 @@
                 if ($result->num_rows == 1) {
                     $result = $result->fetch_assoc();
                     session_start();
-                    $_SESSION["loggedin"] = true;
-                    $_SESSION["teacher"] = true;
-                    $_SESSION["username"] = $result["tname"];    
-                    $_SESSION["id"] = $result["id"];  
-                    echo 1;                        
+                    $_SESSION["teacher_loggedin"] = true;
+                    $_SESSION["teacher_username"] = htmlspecialchars($result["user_name"]);    
+                    $_SESSION["teacher_id"] = htmlspecialchars($result["id"]);    
+                    echo 1;
                 } else {
                     echo 'Failed to fetch data. try again later!';
                 }
