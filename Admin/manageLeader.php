@@ -18,13 +18,13 @@
 </head>
 <body class="sb-nav-fixed">
     <!-- navbar -->
-    <?php  include "../include/nav.php" ?>
+    <?php  include "./include/nav.php" ?>
     <!-- sidebar -->
     <div id="layoutSidenav" class="sb-sidenav-toggled">
         <?php  include "./include/sidebar.php" ?> 
         <div id="layoutSidenav_content" class="bg-light-subtle">
             <main class="container p-4 font-monospace">
-                    <div class="row-md-5 d-flex justify-content-between">
+                    <div class="row-md-5 d-flex justify-content-between flex-wrap">
                         <h3 class="fw-bold">Manage Class Leaders</h3>
                         <nav class="breadcrumb">
                             <a class="nav-link text-primary breadcrumb-item" href="./index.php">Main</a>
@@ -46,7 +46,7 @@
                             echo "<script>Swal.fire('Error occured!','database error','error')</script>";
                         }
                 ?>
-                <div class="row p-4">
+                <div class="row p-2 mb-3">
                         <div class="card shadow border border-secondary">
                             <div class="card-body">
                                 <form id="<?php if(!isset($formid)) echo 'addCr'; else echo 'updateCr'; ?>">
@@ -98,7 +98,7 @@
                             </div>
                         </div>
                 </div>
-                <div class="row-md-4 px-4">
+                <div class="row-md-4 p-2">
                     <div class="row p-4 border border-secondary shadow rounded">
                         <form id="uploadForm">
                             <div class="mb-3">
@@ -114,8 +114,8 @@
                         </form>
                     </div>
                 </div>
-                <div class="container-fluid p-4">
-                    <div class="row shadow border border-secondary rounded py-2">
+                <div class="container-fluid p-2">
+                    <div class="row shadow border border-secondary rounded p-2">
                         <div id="mytable" class="table table-responsive">
                             <!-- table  -->
                         </div>

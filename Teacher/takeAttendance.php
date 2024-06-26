@@ -1,6 +1,6 @@
 <?php 
     session_start();
-    if(!isset($_SESSION["teacher_loggedin"],$_SESSION["teacher_loggedin"]) || $_SESSION["teacher_loggedin"] !== true){
+    if(!isset($_SESSION["teacher_loggedin"]) || $_SESSION["teacher_loggedin"] !== true){
         header("location: login.php");
         exit;
     }
@@ -18,7 +18,7 @@
 </head>
 <body class="sb-nav-fixed">
     <!-- navbar -->
-    <?php  include "../include/nav.php" ?>
+    <?php  include "./include/nav.php" ?>
     <!-- sidebar -->
     <div id="layoutSidenav" class="sb-sidenav-toggled">
         <?php  include "./include/sidebar.php" ?>
@@ -32,13 +32,19 @@
                     </nav>
                 </div>
                 <?php 
-                    $teacher_class = "select distinct Sclass from allocate_teacher where tid = '{$_SESSION["id"]}'";
-                    $teacher_class_result = mysqli_query($conn,$teacher_class);
+                    $stmt = $conn->prepare("SELECT DISTINCT Sclass FROM allocate_teacher WHERE tid = ?");
+                    $stmt->bind_param("s", $_SESSION["teacher_id"]);
+                    $stmt->execute();
+                    $teacher_class_result = $stmt->get_result();
+                    $stmt->close();
 
-                    $teacher_subject = "SELECT DISTINCT s.Course_id, s.* FROM allocate_teacher a JOIN subjects s ON s.Course_id = a.Course_id WHERE a.tid = '{$_SESSION["id"]}'";
-                    $teacher_subject_result = mysqli_query($conn,$teacher_subject);
+                    $stmt = $conn->prepare("SELECT DISTINCT s.Course_id, s.* FROM allocate_teacher a JOIN subjects s ON s.Course_id = a.Course_id WHERE a.tid = ?");
+                    $stmt->bind_param("s", $_SESSION["teacher_id"]);
+                    $stmt->execute();
+                    $teacher_subject_result = $stmt->get_result();
+                    $stmt->close();
                 ?>
-                <div class="row p-4">
+                <div class="row p-2">
                     <div class="card shadow border border-secondary">
                         <div class="card-body">
                             <form id="viewStudent" class="">
@@ -81,26 +87,20 @@
                     <div class="toast-body msg fw-bold text-nowrap">
                     </div>
                     <button type="button" class="btn me-2 m-auto" data-bs-dismiss="toast" aria-label="Close" >
-                    <i class="icon text-secondary fa-solid fa-xmark fs-2"></i>
-                </button>
+                        <i class="icon text-secondary fa-solid fa-xmark fs-2"></i>
+                    </button>
                 </div>
             </div>
         </div>
     </div>
-<?php 
-    $checkattendance = "select * from attendance";
-    $checkattendance = mysqli_query($conn,$checkattendance);
-?>
-                <div class="container-fluid showme">
-                    <div class="row">
-                        <div class="col">
-                            <div class="shadow border border-secondary rounded py-2">
-                                <div id="mytable" class="table-responsive p-3">
-                                    
-                                </div>
-                                <div class="d-flex justify-content-center mt-3">
-                                    <input type="submit" class="btn btn-success shadow my-2" id="attendance-btn" value="Take Attendance">
-                                </div>
+                <div class="row-md-4 showme  mt-3">
+                    <div class="col">
+                        <div class="shadow border border-secondary rounded py-2">
+                            <div id="mytable" class="table-responsive p-3">
+                                
+                            </div>
+                            <div class="d-flex">
+                                <button class="btn btn-success mx-auto" id="attendance-btn">Take attendance</button>
                             </div>
                         </div>
                     </div>

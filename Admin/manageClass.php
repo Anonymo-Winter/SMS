@@ -18,13 +18,13 @@
 </head>
 <body class="sb-nav-fixed">
     <!-- navbar -->
-    <?php  include "../include/nav.php" ?>
+    <?php  include "./include/nav.php" ?>
     <!-- sidebar -->
     <div id="layoutSidenav" class="sb-sidenav-toggled">
         <?php  include "./include/sidebar.php" ?> 
         <div id="layoutSidenav_content" class="bg-light-subtle">
             <main class="container p-4 font-monospace">
-                <div class="row-md-5 d-flex justify-content-between">
+                <div class="row-md-5 d-flex justify-content-between flex-wrap">
                     <h3 class="fw-bold">Manage Classes</h3>
                     <nav class="breadcrumb">
                         <a class="nav-link text-primary breadcrumb-item" href="./index.php">Main</a>
@@ -46,7 +46,7 @@
                         }
                     }
                 ?>
-                <div class="row p-4">
+                <div class="row p-2 mb-3">
                         <div class="card shadow border border-secondary">
                             <div class="card-body">
                                 <form id="<?php if(!isset($formid)) echo 'addClass'; else echo 'updateClass'; ?>">
@@ -73,6 +73,17 @@
                                         <input type="text" class="form-control" name="sclass" id="sclass" value="<?php if(isset($result['Sclass'])) echo $result['Sclass'];?>" aria-describedby="nameerr" required/>
                                         <small id="nameerr" class="text-danger ms-2 d-none"></small>
                                     </div>
+                                    <div class="mb-3">
+                                        <label for="year" class="form-label">Year</label>
+                                        <select class="form-select" name="year" id="year" aria-describedby="yerr">
+                                        <option value="" selected>--select one--</option>
+                                            <option value="E1" <?php if(isset($result) && $result["year"]=="E1") echo "selected";?>>E1</option>
+                                            <option value="E2" <?php if(isset($result) && $result["year"]=="E2") echo "selected";?>>E2</option>
+                                            <option value="E3" <?php if(isset($result) && $result["year"]=="E3") echo "selected";?>>E3</option>
+                                            <option value="E4" <?php if(isset($result) && $result["year"]=="E4") echo "selected";?>>E4</option>
+                                        </select>
+                                        <small id="yerr" class="text-danger"></small>
+                                    </div>
                                     <div class="text-end">
                                         <input type="submit" value="<?php if(isset($btn)) echo $btn; else echo "Submit" ?>" class="<?php if(isset($btn)) echo "btn btn-warning shadow"; else echo "btn btn-primary shadow" ?>" id="submit-btn">
                                     </div>
@@ -80,7 +91,7 @@
                             </div>
                         </div>
                 </div>
-                <div class="row-md-4 px-4">
+                <div class="row-md-4 p-2">
                     <div class="row p-4 border border-secondary shadow rounded">
                         <form id="uploadForm">
                             <div class="mb-3">
@@ -93,11 +104,15 @@
                         </form>
                     </div>
                 </div>
-                <div class="container-fluid p-4">
-                    <div class="row shadow border border-secondary rounded py-2">
-                        <div id="mytable" class="table table-responsive">
-                            <!-- table  -->
-                        </div>
+                <div class="row-md-4 showme  mt-3">
+                    
+                        <div class="col">
+                            <div class="shadow border border-secondary rounded py-2">
+                                <div id="mytable" class="table-responsive p-3">
+                                    
+                                </div>
+                            </div>
+
                     </div>
                 </div>
             </main>
@@ -212,7 +227,7 @@
             $.ajax({
                 url : './fetch/addClass.php',
                 type : "POST",
-                data:{sclass:$("#sclass").val().toUpperCase(),dept:$("#dept option:selected").val().toUpperCase()},
+                data:{sclass:$("#sclass").val().toUpperCase(),dept:$("#dept option:selected").val().toUpperCase(),year:$("#year option:selected").val()},
                 beforeSend : function(){
                     $("#submit-btn").val("saving..");
                     $("#submit-btn").attr("disabled","disabled");
@@ -234,13 +249,16 @@
                 error:function(data){
                         Swal.fire(
                         "Error occured!",
-                        "Something went wrong. unable allocate teacher!",
+                        "Something went wrong. unable add class!",
                         "error"
                     );
+                },
+                complete:function(){
+                    $("#submit-btn").val("Save");
+                    $("#submit-btn").attr("disabled",false);  
                 }
-            });
-            $("#submit-btn").val("Save");
-            $("#submit-btn").attr("disabled",false);                    
+            })
+                              
         });
 
         $("#updateClass").on("submit",function(e){
@@ -253,7 +271,7 @@
                     $("#submit-btn").val("Updating..");
                     $("#submit-btn").attr("disabled","disabled"); 
                 },
-                data:{sclass:$("#sclass").val().toUpperCase(),dept:$("#dept").val().toUpperCase(),id:$("#id").val(),update:$("#update").val()},
+                data:{sclass:$("#sclass").val().toUpperCase(),dept:$("#dept").val().toUpperCase(),id:$("#id").val(),update:$("#update").val(),year:$("#year option:selected").val()},
                 success : function(data){
                     if(data == 1){
                         Swal.fire("Success","Class updates successfully!","success");
@@ -269,14 +287,14 @@
                     }
                 },
                 error:function(data){
-                        Swal.fire(
+                    Swal.fire(
                         "Error occured!",
-                        "Something went wrong. unable allocate teacher!",
+                        "Something went wrong. unable update class!",
                         "error"
                     );
                 },
                 complete:function(){
-                    $("submit-btn").attr("disabled",false);
+                    $("#submit-btn").attr("disabled",false);
                     $("#submit-btn").val("Update");
                 }
             })
@@ -287,12 +305,13 @@
                 type:"GET",
                 dataType:"json",
                 success:function(data){
-                    var tableHTML = "<table id='dataTable' class='display table table-bordered table-hover table-striped'><thead class='table-dark'><th class='text-center'>#</th><th class='text-center'>Class</th><th class='text-center'>Dept</th><th class='text-center'>Edit</th><th class='text-center'>Delete</th></thead><tbody class='text-center'>";
+                    var tableHTML = "<table id='dataTable' class='display table table-bordered table-hover table-striped'><thead class='table-dark'><th class='text-center'>#</th><th class='text-center'>Class</th><th class='text-center'>Dept</th><th class='text-center'>Year</th><th class='text-center'>Edit</th><th class='text-center'>Delete</th></thead><tbody class='text-center'>";
                     data.forEach(function(row) {
                         tableHTML += "<tr>";
                         tableHTML += "<td class='text-center'>" + row.id + "</td>";
                         tableHTML += "<td>" + row.Sclass + "</td>";
                         tableHTML += "<td>" + row.dept_name + "</td>";
+                        tableHTML += "<td>" + row.year + "</td>";
                         tableHTML += "<td><a href='./manageClass.php?action=edit&id="+row.id+"' class='btn btn-primary btn-sm btn-edit' data-id='" + row.id + "'>Edit</a></td>";
                         tableHTML += "<td><button class='btn btn-danger btn-sm btn-delete' data-id='" + row.id + "'>Delete</button></td>";
                         tableHTML += "</tr>";
@@ -306,6 +325,7 @@
                             $(row).find('td:eq(0)').text(dataIndex + 1); 
                             $(row).find('td:eq(0)').addClass("sino");
                         },
+                        order: [[1, 'asc']]
                     });
                 },
                 error:function(){

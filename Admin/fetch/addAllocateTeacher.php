@@ -13,9 +13,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $sclass = htmlspecialchars(trim($_POST["sclass"]));
             $Course_id = htmlspecialchars(trim($_POST["courseid"]));
             if (isset($_POST["update"])){
-                $sql = "UPDATE `allocate_teacher` SET `Sclass`=?,`Course_id`=? WHERE `tid`=?";
+                $id = htmlspecialchars(trim($_POST["id"]));
+                $sql = "UPDATE `allocate_teacher` SET `Sclass`=?,`Course_id`=?,`tid`=? WHERE `id`=?";
                 $stmt = $conn->prepare($sql);
-                $stmt->bind_param("sss", $sclass,$Course_id,$tid);
+                $stmt->bind_param("sssi", $sclass,$Course_id,$tid,$id);
                 try{
                     if ($stmt->execute()) {
                         echo 1;

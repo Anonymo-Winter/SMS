@@ -18,7 +18,7 @@
 </head>
 <body class="sb-nav-fixed">
     <!-- navbar -->
-    <?php  include "../include/nav.php" ?>
+    <?php  include "./include/nav.php" ?>
     <!-- sidebar -->
     <div id="layoutSidenav" class="sb-sidenav-toggled">
         <?php  include "./include/sidebar.php" ?>
@@ -132,7 +132,7 @@
                                         <label for="courseid" class="form-label">Course Name<span class='text-danger fw-bolder'>*</span> :</label>
                                         <select class="form-select" name="courseid" id="courseid">
                                             <option value="">Select one</option>
-                                            <?php 
+                                            <?php
                                                     $cor_sql = "select * from subjects where dept = '$result1[dept]'";
                                                     try{
                                                         $cor_result = mysqli_query($conn,$cor_sql);

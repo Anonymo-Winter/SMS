@@ -15,8 +15,8 @@
                     $result = $result->fetch_assoc();
                     session_start();
                     $_SESSION["teacher_loggedin"] = true;
-                    $_SESSION["teacher_username"] = htmlspecialchars($result["user_name"]);    
-                    $_SESSION["teacher_id"] = htmlspecialchars($result["id"]);    
+                    $_SESSION["username"] = htmlspecialchars($result["tname"]);    
+                    $_SESSION["teacher_id"] = htmlspecialchars($result["id"]); 
                     echo 1;
                 } else {
                     echo 'Failed to fetch data. try again later!';

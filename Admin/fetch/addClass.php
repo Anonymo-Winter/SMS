@@ -2,7 +2,7 @@
 require_once '../../config.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        if(!isset($_POST["sclass"]) || !isset($_POST["dept"]) || empty(trim($_POST["sclass"])) || empty(trim($_POST["dept"]))) 
+        if(!isset($_POST["sclass"]) || !isset($_POST["dept"]) || !isset($_POST["year"]) || empty(trim($_POST["sclass"])) || empty(trim($_POST["dept"])) || empty(trim($_POST["year"]))) 
         {
             echo "To proceed please fill all mandatory fields!";
         } 
@@ -10,10 +10,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         {
             $cls = trim($_POST["sclass"]);
             $dept = trim($_POST["dept"]);
+            $year = trim($_POST["year"]);
+            
             if (isset($_POST["update"])){
-                $sql = "UPDATE `classes` SET `Sclass`=?,`dept`=? WHERE `id`=?";
+                $sql = "UPDATE `classes` SET `Sclass`=?,`dept`=?,year=? WHERE `id`=?";
                 $stmt = $conn->prepare($sql);
-                $stmt->bind_param("sss", $cls, $dept,$_POST["id"]);
+                $stmt->bind_param("ssss", $cls, $dept,$year,$_POST["id"]);
                 try{
                     if ($stmt->execute()) {
                         echo 1;
@@ -25,9 +27,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 }
             }
             else {
-                $sql = "INSERT INTO `classes`(`Sclass`, `dept`) VALUES (?,?)";
+                $sql = "INSERT INTO `classes`(`Sclass`, `dept`,`year`) VALUES (?,?,?)";
                 $stmt = $conn->prepare($sql);
-                $stmt->bind_param("ss", $cls, $dept);
+                $stmt->bind_param("sss", $cls, $dept,$year);
                 try{
                     if ($stmt->execute()) {
                         echo 1;

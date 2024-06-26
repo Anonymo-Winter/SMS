@@ -17,13 +17,13 @@
 </head>
 <body class="sb-nav-fixed">
     <!-- navbar -->
-    <?php  include "../include/nav.php" ?>
+    <?php  include "./include/nav.php" ?>
     <!-- sidebar -->
     <div id="layoutSidenav" class="sb-sidenav-toggled">
         <?php  include "./include/sidebar.php" ?>
         <div id="layoutSidenav_content">
             <main class="container p-4 font-monospace">
-                <div class="row-md-5 d-flex justify-content-between">
+                <div class="row-md-5 d-flex justify-content-between flex-wrap">
                     <h3 class="fw-bold">Manage Students</h3>
                     <nav class="breadcrumb">
                         <a class="nav-link text-primary breadcrumb-item" href="./index.php">Main</a>
@@ -45,7 +45,7 @@
                         }
                     }
                 ?>
-                <div class="row p-4">
+                <div class="row p-2 pb-3">
                         <div class="card shadow border border-secondary">
                             <div class="card-body">
                                 <form id="<?php if(!isset($formid)) echo 'addStudent'; else echo 'updateStudent';   ?>">
@@ -109,7 +109,7 @@
                             </div>
                         </div>
                 </div>
-                <div class="row-md-4 px-4">
+                <div class="row-md-4 px-2">
                     <div class="row p-4 border border-secondary shadow rounded">
                         <form id="uploadForm">
                             <div class="mb-3">
@@ -125,15 +125,15 @@
                         </form>
                     </div>
                 </div>
-                <div class="container-fluid showme mt-4">
-                    <div class="row">
+                <div class="row-md-4 showme  mt-3">
+                    
                         <div class="col">
                             <div class="shadow border border-secondary rounded py-2">
                                 <div id="mytable" class="table-responsive p-3">
                                     
                                 </div>
                             </div>
-                        </div>
+
                     </div>
                 </div>
             </main>
@@ -183,7 +183,6 @@
                             'success'
                         ); 
                         $("#uploadForm").trigger("reset");
-                        loadTable();
                     }
                     else if(response == "error")
                     {
@@ -209,6 +208,7 @@
                             'error' 
                         );
                     }
+                    loadTable();
                 },
                 error: function() {
                     alert('Error uploading file');
@@ -384,15 +384,15 @@
                     tableHTML += "</tbody></table>";
                     $("#mytable").html(tableHTML);
                     table = $("#dataTable").DataTable({
-                        responsive: true, 
+                        responsive: true,
                         autoWidth: false,
-                        order: [[0, 'asc']],
+                        order: [[3,'asc'],[0,'asc']],
                     });
                 },
                 error:function(){
                     Swal.fire( 
                             'Error', 
-                            'Error loading table', 
+                            'Error loading table',
                             'error' 
                         );
                 }

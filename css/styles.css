@@ -1,4 +1,7 @@
-@charset "UTF-8";
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@100..900&display=swap');
+body{
+  font-family: "Roboto Slab", serif;
+}
 :root {
   --bs-blue: #0d6efd;
   --bs-indigo: #6610f2;

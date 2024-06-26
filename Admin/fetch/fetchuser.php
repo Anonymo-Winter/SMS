@@ -17,7 +17,7 @@
                     $result = $result->fetch_assoc();
                     session_start();
                     $_SESSION["admin_loggedin"] = true;
-                    $_SESSION["admin_username"] = htmlspecialchars($result["username"]);    
+                    $_SESSION["admin_username"] = "Admin";    
                     echo 1;
                 } else {
                     echo 'Failed to fetch data. try again later!';

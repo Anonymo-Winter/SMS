@@ -9,22 +9,22 @@
                             </a>
                             <div class="sb-sidenav-menu-heading">Manage Students</div>
                             <a class="nav-link" href="takeAttendance.php">
-                                <div class="sb-nav-link-icon"><i class="fas fa-user"></i></div>
+                                <div class="sb-nav-link-icon"><i class="fas fa-file-edit"></i></div>
                                 Take Attendance
                             </a> 
                             <a class="nav-link" href="viewClassAttendane.php">
-                                <div class="sb-nav-link-icon"><i class="fas fa-user"></i></div>
+                                <div class="sb-nav-link-icon"><i class="fas fa-calendar-check"></i></div>
                                 View Class Attendance
                             </a> 
                             <a class="nav-link" href="viewStudentAttendance.php">
-                                <div class="sb-nav-link-icon"><i class="fas fa-user"></i></div>
+                                <div class="sb-nav-link-icon"><i class="fas fa-calendar-day"></i></div>
                                  Student Attendance
                             </a>          
                         </div>
                     </div>
                     <div class="sb-sidenav-footer">
                         <div class="small">Logged in as:</div>
-                        <?php if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"]) echo htmlspecialchars($_SESSION["username"])?>
+                        <?php echo htmlspecialchars($_SESSION["username"])?>
                     </div>
                 </nav>
             </div>

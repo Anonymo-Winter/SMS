@@ -17,13 +17,13 @@
 </head>
 <body class="sb-nav-fixed">
     <!-- navbar -->
-    <?php  include "../include/nav.php" ?>
+    <?php  include "./include/nav.php" ?>
     <!-- sidebar -->
     <div id="layoutSidenav" class="sb-sidenav-toggled">
         <?php  include "./include/sidebar.php" ?> 
         <div id="layoutSidenav_content" class="bg-light-subtle">
             <main class="container p-3 font-monospace">
-                <div class="row-md-5 d-flex justify-content-between">
+                <div class="row-md-5 d-flex justify-content-between flex-wrap">
                     <h3 class="fw-bold">Manage Subjects</h3>
                     <nav class="breadcrumb">
                         <a class="nav-link text-primary breadcrumb-item" href="./index.php">Main</a>
@@ -50,7 +50,7 @@
                             echo "<script>Swal.fire('We\'re sorry, but we couldn\'t update your information. Please try again.','Something went wrong. Please try again!','error')</script>";
                     }
                 ?>
-                <div class="row p-4">
+                <div class="row p-3">
                         <div class="card shadow border border-secondary">
                             <div class="card-body">
                                 <form id="<?php if(!isset($formid)) echo 'addSubject'; else echo 'updateSubject'; ?>">
@@ -87,11 +87,15 @@
                             </div>
                         </div>
                 </div>
-                <div class="container-fluid p-4">
-                    <div class="row shadow border border-secondary rounded py-2">
-                        <div id="mytable" class="table table-responsive">
-                            <!-- table  -->
-                        </div>
+                <div class="row p-2 showme">
+                    
+                        <div class="col">
+                            <div class="shadow border border-secondary rounded py-2">
+                                <div id="mytable" class="table-responsive p-3">
+                                    
+                                </div>
+                            </div>
+
                     </div>
                 </div>
             </main>
@@ -235,11 +239,11 @@
                     table = $("#dataTable").DataTable({
                         responsive: true, 
                         autoWidth: false,
-                        order: [[0, 'asc']],
                         "createdRow": function(row, data, dataIndex){
                             $(row).find('td:eq(0)').text(dataIndex + 1); 
                             $(row).find('td:eq(0)').addClass("sino");
                         },
+                        order: [[1, 'asc']]
                     });
                 },
                 error:function(){

@@ -9,7 +9,7 @@
                         </a>
                         <div class="sb-sidenav-menu-heading">Classes & Students</div> 
                             <a href="manageStudents.php" class="nav-link"><div class="sb-nav-link-icon"><i class="fas fa-user"></i></div> Manage Students</a>
-                            <a href="manageLeader.php" class="nav-link"><div class="sb-nav-link-icon"><i class="fas fa-user-circle"></i></div>Manage CRs</a>
+                            <!-- <a href="manageLeader.php" class="nav-link"><div class="sb-nav-link-icon"><i class="fas fa-user-circle"></i></div>Manage CRs</a> -->
                         <div class="sb-sidenav-menu-heading">Classes</div>
                             <a href="manageClass.php" class="nav-link"><div class="sb-nav-link-icon"><i class="fas fa-chalkboard"></i></div> Manage Classes</a>
                         <div class="sb-sidenav-menu-heading">Teachers</div>
@@ -21,7 +21,7 @@
                 </div>
                 <div class="sb-sidenav-footer">
                     <div class="small">Logged in as:</div>
-                    <?php if(isset($_SESSION["username"])) echo htmlspecialchars($_SESSION["username"]);?>
+                    <?php echo htmlspecialchars($_SESSION["admin_username"]);?>
                 </div>
             </nav>
         </div>

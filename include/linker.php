@@ -40,10 +40,10 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Radio+Canada+Big:ital,wght@0,400..700;1,400..700&display=swap');
-        body{
-            font-family: "Radio Canada Big", sans-serif;
+        body {
+            font-family: 'Radio Canada', sans-serif;
         }
-        form-select:active,
+        .form-select:active,
         .form-select:focus,
         .form-control:active,
         .form-control:focus{

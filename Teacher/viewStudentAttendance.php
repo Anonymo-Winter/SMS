@@ -1,6 +1,6 @@
 <?php 
     session_start();
-    if(!isset($_SESSION["teacher_loggedin"],$_SESSION["teacher_loggedin"]) || $_SESSION["teacher_loggedin"] !== true){
+    if(!isset($_SESSION["teacher_loggedin"]) || $_SESSION["teacher_loggedin"] !== true){
     
         header("location: login.php");
         exit;
@@ -19,28 +19,34 @@
 </head>
 <body class="sb-nav-fixed">
     <!-- navbar -->
-    <?php  include "../include/nav.php" ?>
+    <?php  include "./include/nav.php" ?>
     <!-- sidebar -->
     <div id="layoutSidenav" class="sb-sidenav-toggled">
         <?php  include "./include/sidebar.php" ?>
         <div id="layoutSidenav_content">
-        <main class="container-fluid  p-4 font-monospace">
+        <main class="container-fluid p-4 font-monospace">
                 <div class="row-md-3 d-flex justify-content-between flex-wrap gap-1">
                         <h3>Dashboard</h3>
                     <nav class="breadcrumb">
                         <a class="nav-link text-primary breadcrumb-item" href="./index.php"> Main</a>
-                        <span class="breadcrumb-item active" aria-current="page">Take Attendance</span>
+                        <span class="breadcrumb-item active" aria-current="page">View Student Attendance</span>
                     </nav>
                 </div>
                 <?php 
-                    $teacher_class = "select distinct Sclass from allocate_teacher where tid = ".htmlspecialchars($_SESSION["id"]);
-                    $teacher_class_result = mysqli_query($conn,$teacher_class);
+                    $stmt = $conn->prepare("SELECT DISTINCT Sclass FROM allocate_teacher WHERE tid = ?");
+                    $stmt->bind_param("s", $_SESSION["teacher_id"]);
+                    $stmt->execute();
+                    $teacher_class_result = $stmt->get_result();
+                    $stmt->close();
 
-                    $teacher_subject = "select distinct Course_id from allocate_teacher where tid = ".htmlspecialchars($_SESSION["id"]);
-                    $teacher_subject_result = mysqli_query($conn,$teacher_subject);
+                    $stmt = $conn->prepare("SELECT DISTINCT s.Course_id, s.* FROM allocate_teacher a JOIN subjects s ON s.Course_id = a.Course_id WHERE a.tid = ?");
+                    $stmt->bind_param("s", $_SESSION["teacher_id"]);
+                    $stmt->execute();
+                    $teacher_subject_result = $stmt->get_result();
+                    $stmt->close();
                 ?>
 
-                <div class="row p-4">
+                <div class="row p-2">
                     <div class="card shadow border border-secondary">
                         <div class="card-body">
                             <form id="viewStudent" class="needs-validation" novalidate>
@@ -63,7 +69,7 @@
                                         <select class="form-select" name="scourse" id="scourse" required>
                                             <option value="" selected>--select subject--</option>
                                             <?php while($row = mysqli_fetch_assoc($teacher_subject_result)) { ?>
-                                                <option value="<?php echo $row['Course_id']?>"><?php echo $row['Course_id']?></option>
+                                                <option value="<?php echo $row['Course_id']?>"><?php echo $row['Course_name']?></option>
                                             <?php } ?>
                                         </select>
                                     </div>
@@ -87,13 +93,11 @@
                         </div>
                     </div>
                 </div>
-                <div class="container-fluid showme">
-                    <div class="row">
-                        <div class="col">
-                            <div class="shadow border border-secondary rounded py-2">
-                                <div id="mytable" class="table-responsive p-3">
-                                    
-                                </div>
+                <div class="row-md-4 showme  mt-3">
+                    <div class="col">
+                        <div class="shadow border border-secondary rounded py-2">
+                            <div id="mytable" class="table-responsive p-3">
+                                
                             </div>
                         </div>
                     </div>
@@ -156,18 +160,20 @@
                     class_id: $("#sclass").val()
                 },
                 success: function (data) {
+                    alert(data);
                     if($("#type").val() == "overall"){
                             loadFull();
-                    }
-                    else if (data == 1) {
-                        if($("#type").val() == "bydate"){
-                            loadbyDate();
+                    }else{
+                        if (data == 1) {
+                            if($("#type").val() == "bydate"){
+                                loadbyDate();
+                            }
                         }
-                    }
-                    else if(data == 0)
-                    {
-                        $("#showme").show();
-                        $("#mytable").html("<div class='text-danger text-center h3'>No attendance has taken on (<span class='text-success'>"+$("#tdate").val()+")</span></div>");
+                        else if(data == 0)
+                        {
+                            $("#showme").show();
+                            $("#mytable").html("<div class='text-danger text-center h3'>No attendance has taken on (<span class='text-success'>"+$("#tdate").val()+")</span></div>");
+                        }
                     }
                 },
                 error: function () {
@@ -354,10 +360,10 @@
         event.preventDefault()
         event.stopPropagation()
       }
-
       form.classList.add('was-validated')
     }, false)
   })
+
 })()
 </script>
 </body>

@@ -18,7 +18,7 @@
 </head>
 <body class="sb-nav-fixed">
     <!-- navbar -->
-    <?php  include "../include/nav.php" ?>
+    <?php  include "./include/nav.php" ?>
     <!-- sidebar -->
     <div id="layoutSidenav" class="sb-sidenav-toggled">
 
@@ -36,6 +36,9 @@
 
                 $department = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(*) as total_dept FROM department"));
                 $department = $department["total_dept"];
+
+                $subjects = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(*) as total_sub FROM subjects"));
+                $subjects = $subjects["total_sub"];
             }catch(Exception $e)
             {
                 echo "<script>Swal.fire('We\'re sorry, but we couldn\'t fetch data. Please try again.','Something went wrong. Please try again!','warning')</script>";
@@ -43,7 +46,7 @@
         ?>
         <div id="layoutSidenav_content">
             <main class="container p-4 font-monospace">
-                <div class="row-md-5 d-flex justify-content-between">
+                <div class="row-md-5 d-flex justify-content-between flex-wrap">
                     <h3 class="fw-bold">Dashboard</h3>
                     <nav class="breadcrumb">
                         <a class="nav-link text-primary breadcrumb-item" href="./index.php">Main</a>
@@ -109,6 +112,23 @@
                                 </div>
                                 <div class="col-auto">
                                     <i class="fas fa-chalkboard-teacher fa-2x text-primary"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- subjects Cards -->
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card p-2 shadow border  border-secondary-subtle">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-uppercase text-muted mb-1">Subjects</div>
+                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800"><?php echo $subjects;?></div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fas fa-graduation-cap fa-2x text-danger"></i>
                                 </div>
                             </div>
                         </div>
