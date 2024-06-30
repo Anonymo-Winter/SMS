@@ -12,7 +12,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $tname = htmlspecialchars(trim($_POST["tname"]));
             $uname = htmlspecialchars(trim($_POST["uname"]));
             $tphone = htmlspecialchars(trim($_POST["tphone"]));
-            $password = htmlspecialchars(trim($_POST["password"]));
+            $password = password_hash(htmlspecialchars(trim($_POST["password"])),PASSWORD_DEFAULT);
             $subject = htmlspecialchars(trim($_POST["subject"]));
             $dept = htmlspecialchars(trim($_POST["dept"]));
             if(checkname(strtoupper($tname)) && checkphone($tphone)) {

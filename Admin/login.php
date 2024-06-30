@@ -123,15 +123,24 @@
                         success: function(data) {
                             if (data == 1) {
                                 window.location.href = "./index.php";
-                            } else {
+                            } 
+                            else{
                                 Swal.fire({
                                     icon: 'error',
                                     title: 'Invalid Credentials',
-                                    text: 'Please enter a valid username and password!',
+                                    text:data,
                                     confirmButtonColor: '#3085d6',
-                                    confirmButtonText: 'OK'
-                                });
+                                    confirmButtonText: 'OK'                                })
                             }
+                            // else {
+                            //     Swal.fire({
+                            //         icon: 'error',
+                            //         title: 'Invalid Credentials',
+                            //         text: 'Please enter a valid username and password!',
+                            //         confirmButtonColor: '#3085d6',
+                            //         confirmButtonText: 'OK'
+                            //     });
+                            // }
                             $("#submit-btn").text("Login").prop("disabled", false);
                         },
                         error: function() {
