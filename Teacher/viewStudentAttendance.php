@@ -26,7 +26,7 @@
         <div id="layoutSidenav_content">
         <main class="container-fluid p-4 font-monospace">
                 <div class="row-md-3 d-flex justify-content-between flex-wrap gap-1">
-                        <h3>Dashboard</h3>
+                        <h3 class="bold">Dashboard</h3>
                     <nav class="breadcrumb">
                         <a class="nav-link text-primary breadcrumb-item" href="./index.php"> Main</a>
                         <span class="breadcrumb-item active" aria-current="page">View Student Attendance</span>
@@ -137,7 +137,6 @@
         $("#viewStudent").on("submit",function(e){
             e.preventDefault();
             if($("#scourse").val().trim() != "" && $("#sclass").val().trim() != ""  && $("#Sid").val().trim() != ""  && $("#type").val().trim() != ""){
-                $("viewStudent").trigger("reset");
                 checkexist();
             }
             else{
@@ -171,7 +170,7 @@
                         }
                         else if(data == 0)
                         {
-                            $("#showme").show();
+                            $(".showme").show();
                             $("#mytable").html("<div class='text-danger text-center h3'>No attendance has taken on (<span class='text-success'>"+$("#tdate").val()+")</span></div>");
                         }
                     }
