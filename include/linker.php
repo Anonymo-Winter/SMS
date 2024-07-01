@@ -51,7 +51,9 @@
             box-shadow:none;
         }
 
-
+        .sb-nav-fixed{
+            display:none;
+        }
 
         .loader {
   width: 60px;
@@ -97,4 +99,3 @@
   }
 }  
     </style>
-

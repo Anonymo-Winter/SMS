@@ -13,7 +13,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <?php include '../include/linker.php' ?>
+    <?php include './include/linker.php' ?>
 </head>
 <body class="sb-nav-fixed">
     <!-- navbar -->
@@ -21,7 +21,7 @@
     <!-- sidebar -->
     <div id="layoutSidenav" class="sb-sidenav-toggled">
         <?php  include "./include/sidebar.php" ?> 
-        <div id="layoutSidenav_content" class="bg-light-subtle">
+        <div id="layoutSidenav_content" id="content" class="bg-light-subtle">
             <main class="container p-3 font-monospace">
                 <div class="row-md-5 d-flex justify-content-between flex-wrap">
                     <h3 class="fw-bold">Manage Subjects</h3>

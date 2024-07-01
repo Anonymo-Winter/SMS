@@ -14,15 +14,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>    
-    <?php include "./include/linker.php" ?>
+    <?php include "./include/linker.php"; ?>
 </head>
+
 <body class="sb-nav-fixed">
+
     <!-- navbar -->
-    <?php  include "./include/nav.php" ?>
+    <?php  include "./include/nav.php"; ?>
+
     <!-- sidebar -->
     <div id="layoutSidenav" class="sb-sidenav-toggled">
 
-        <?php  include "./include/sidebar.php" ?> 
+        <?php  include "./include/sidebar.php"; ?> 
         <?php 
             try{
                 $students = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(*) as total_students FROM students"));
@@ -44,7 +47,7 @@
                 echo "<script>Swal.fire('We\'re sorry, but we couldn\'t fetch data. Please try again.','Something went wrong. Please try again!','warning')</script>";
             }
         ?>
-        <div id="layoutSidenav_content">
+        <div id="layoutSidenav_content" id="content">
             <main class="container p-4 font-monospace">
                 <div class="row-md-5 d-flex justify-content-between flex-wrap">
                     <h3 class="fw-bold">Dashboard</h3>
@@ -154,7 +157,7 @@
                     </div>
                 </div>
             </main>
-            <?php include "../include/footer.php"?>
+            <?php include "../include/footer.php"; ?>
         </div>
     </div>
 </div>
@@ -164,6 +167,7 @@
         event.preventDefault();
         document.body.classList.toggle('sb-sidenav-toggled');
     });
+
 </script>
 </body>
 </html>

@@ -9,3 +9,13 @@
         </div>
     </div>
 </footer>
+
+<script>
+    window.addEventListener('load', function() {
+        const preloader = document.getElementById('preloader');
+        const content = document.getElementById('content');
+        preloader.style.display = 'none';
+        content.style.display = 'block';
+        document.body.style.overflow = 'auto'; // Enable scrolling once loaded
+    });
+</script>

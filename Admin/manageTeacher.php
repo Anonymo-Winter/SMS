@@ -21,7 +21,7 @@
     <!-- sidebar -->
     <div id="layoutSidenav" class="sb-sidenav-toggled">
         <?php  include "./include/sidebar.php" ?>
-        <div id="layoutSidenav_content">
+        <div id="layoutSidenav_content" id="content">
             <main class="container p-4 font-monospace">
                 <div class="row-md-5 d-flex justify-content-between flex-wrap">
                     <h3 class="fw-bold">Manage Teachers</h3>

@@ -120,6 +120,7 @@ try {
         event.preventDefault();
         document.body.classList.toggle('sb-sidenav-toggled');
     });
+
 </script>
 </body>
 </html>

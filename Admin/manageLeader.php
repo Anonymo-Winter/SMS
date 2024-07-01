@@ -22,7 +22,7 @@
     <!-- sidebar -->
     <div id="layoutSidenav" class="sb-sidenav-toggled">
         <?php  include "./include/sidebar.php" ?> 
-        <div id="layoutSidenav_content" class="bg-light-subtle">
+        <div id="layoutSidenav_content" id="content" class="bg-light-subtle">
             <main class="container p-4 font-monospace">
                     <div class="row-md-5 d-flex justify-content-between flex-wrap">
                         <h3 class="fw-bold">Manage Class Leaders</h3>
