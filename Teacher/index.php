@@ -45,14 +45,14 @@ try {
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <?php include "../include/linker.php"; ?>
+    <?php include "./include/linker.php"; ?>
 </head>
 <body class="sb-nav-fixed">
     <?php include "./include/nav.php"; ?>
 
     <div id="layoutSidenav" class="sb-sidenav-toggled">
         <?php include "./include/sidebar.php"; ?> 
-        <div id="layoutSidenav_content">
+        <div id="layoutSidenav_content" id="content">
             <main class="container p-4 font-monospace">
                 <div class="row-md-4 d-flex justify-content-between flex-wrap">
                     <h3 class="fw-bold">Dashboard</h3>

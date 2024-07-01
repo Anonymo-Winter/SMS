@@ -15,7 +15,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <?php include "../include/linker.php";?>
+    <?php include "./include/linker.php";?>
 </head>
 <body class="sb-nav-fixed">
     <!-- navbar -->
@@ -23,7 +23,7 @@
     <!-- sidebar -->
     <div id="layoutSidenav" class="sb-sidenav-toggled">
         <?php  include "./include/sidebar.php" ?>
-        <div id="layoutSidenav_content">
+        <div id="layoutSidenav_content" id="content">
         <main class="container-fluid  p-4 font-monospace">
                 <div class="row-md-3 d-flex justify-content-between flex-wrap gap-1">
                         <h3>Dashboard</h3>
