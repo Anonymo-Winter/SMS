@@ -2,9 +2,9 @@
     if($_SERVER["REQUEST_METHOD"]=="POST" && isset($_POST['id'])){
         require_once '../../config.php';
         $studentId = htmlspecialchars($_POST['id']);
-        $sql = "DELETE FROM teachers WHERE id = ?";
+        $sql = "DELETE FROM `teachers` WHERE id = ?";
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param("s", $studentId);
+        $stmt->bind_param("i", $studentId);
         if($stmt->execute()) {
             echo 1;
         } else {

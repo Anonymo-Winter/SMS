@@ -14,18 +14,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>    
-    <?php include "./include/linker.php"; ?>
+    <?php include "./include/linker.php" ?>
 </head>
-
 <body class="sb-nav-fixed">
-
     <!-- navbar -->
-    <?php  include "./include/nav.php"; ?>
-
+    <?php  include "./include/nav.php" ?>
     <!-- sidebar -->
     <div id="layoutSidenav" class="sb-sidenav-toggled">
 
-        <?php  include "./include/sidebar.php"; ?> 
+        <?php  include "./include/sidebar.php" ?> 
         <?php 
             try{
                 $students = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(*) as total_students FROM students"));
@@ -39,9 +36,12 @@
 
                 $department = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(*) as total_dept FROM department"));
                 $department = $department["total_dept"];
-
-                $subjects = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(*) as total_sub FROM subjects"));
-                $subjects = $subjects["total_sub"];
+                
+                $subjects = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(*) as total_subjects FROM subjects"));
+                $subjects = $subjects["total_subjects"];
+                
+                
+                
             }catch(Exception $e)
             {
                 echo "<script>Swal.fire('We\'re sorry, but we couldn\'t fetch data. Please try again.','Something went wrong. Please try again!','warning')</script>";
@@ -120,8 +120,7 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- subjects Cards -->
+                <!-- subjects card -->
                 <div class="col-xl-3 col-md-6 mb-4">
                     <div class="card p-2 shadow border  border-secondary-subtle">
                         <div class="card-body">
@@ -137,6 +136,7 @@
                         </div>
                     </div>
                 </div>
+
 
 
                         <!-- Terms Card  -->
@@ -157,7 +157,7 @@
                     </div>
                 </div>
             </main>
-            <?php include "../include/footer.php"; ?>
+            <?php include "../include/footer.php"?>
         </div>
     </div>
 </div>
@@ -167,7 +167,6 @@
         event.preventDefault();
         document.body.classList.toggle('sb-sidenav-toggled');
     });
-
 </script>
 </body>
 </html>

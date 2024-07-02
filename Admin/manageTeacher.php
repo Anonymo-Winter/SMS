@@ -62,7 +62,7 @@
                                     </div>
                                     <div class="mb-3">
                                         <label for="passwd" class="form-label">Password</label>
-                                        <input type="text" class="form-control" name="passwd" id="passwd" value="<?php if(isset($result['password'])) echo $result['password'];?>" aria-describedby="iderr" required>
+                                        <input type="password" class="form-control" name="passwd" id="passwd" value="<?php if(isset($result['password'])) echo $result['password'];?>" aria-describedby="iderr" required>
                                     </div>
                                     <div class="mb-3">
                                         <label for="tphone" class="form-label">Phone <span class="text-danger">*</span> :</label>
@@ -196,17 +196,17 @@
             var TeacherId = $(this).data("id");
             if(confirm("Are you sure you want to delete this Teacher?")) {
                 $.ajax({
-                    url : './fetch/delete_Teacher.php',
+                    url : './fetch/delete_teacher.php',
                     type: 'POST',
                     data: { id: TeacherId ,action:"delete"},
                     success: function(response) {
                         if(response == 1){
                             settings("bg-success-subtle","text-success","Teacher deleted successfully!");
-                            loadTable();
                         }
                         else{
                             Swal.fire("Error Occured!","Oops!,Something went wrong. Failed complete the operation. Please try again later","error");
                         }
+                        loadTable();
                     },
                     error: function() {
                         Swal.fire("Error Occured!","Oops! Something went wrong. Please try again later","error");
@@ -320,7 +320,8 @@
                         tableHTML += "<td class='text-center'>" + row.id + "</td>";
                         tableHTML += "<td>" + row.tname + "</td>";
                         tableHTML += "<td>" + row.user_name + "</td>";
-                        tableHTML += "<td>" + row.password + "</td>";
+                        tableHTML += "<td><input type='password' value=" + row.password + " disabled></td>";
+                        // tableHTML += "<td>  <input type='password' value="+row.password+" disabled> + "</td>";
                         tableHTML += "<td>" + row.dept_name + "</td>";
                         tableHTML += "<td>" + row.subjects + "</td>";
                         tableHTML += "<td><a href='./manageTeacher.php?action=edit&id="+row.id+"' class='btn btn-primary btn-sm btn-edit' data-id='" + row.id + "'>Edit</a></td>";

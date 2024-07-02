@@ -22,7 +22,7 @@
     <!-- sidebar -->
     <div id="layoutSidenav" class="sb-sidenav-toggled">
         <?php  include "./include/sidebar.php" ?>
-        <div id="layoutSidenav_content" class="content">
+        <div id="layoutSidenav_content" id="content">
             <main class="container p-4 font-monospace">
                 <div class="row-md-5 d-flex justify-content-between">
                     <h3 class="fw-bold">Allocate Teachers</h3>
@@ -54,7 +54,7 @@
                         echo "<script>Swal.fire('We\'re sorry, but we couldn\'t update your information. Please try again.','Something went wrong. Please try again!','error')</script>";
                     }
                 ?>
-                <div class="row p-4">
+                <div class="row p-2 mb-3">
                         <div class="card shadow border border-secondary">
                             <div class="card-body">
                                 <form id="<?php if(!isset($formid)) echo 'addTeacher'; else echo 'updateTeacher';   ?>">
@@ -132,7 +132,7 @@
                                         <label for="courseid" class="form-label">Course Name<span class='text-danger fw-bolder'>*</span> :</label>
                                         <select class="form-select" name="courseid" id="courseid">
                                             <option value="">Select one</option>
-                                            <?php
+                                            <?php 
                                                     $cor_sql = "select * from subjects where dept = '$result1[dept]'";
                                                     try{
                                                         $cor_result = mysqli_query($conn,$cor_sql);
@@ -156,15 +156,15 @@
                             </div>
                         </div>
                 </div>
-                <div class="container-fluid showme mt-4">
-                    <div class="row">
+                <div class="row-md-4 showme  mt-3">
+                    
                         <div class="col">
                             <div class="shadow border border-secondary rounded py-2">
                                 <div id="mytable" class="table-responsive p-3">
                                     
                                 </div>
                             </div>
-                        </div>
+
                     </div>
                 </div>
             </main>

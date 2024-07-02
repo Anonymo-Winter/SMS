@@ -1,5 +1,5 @@
-<!-- preloader -->
 <div class="loader" id="preloader"></div>
+
 
 <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
     <a class="navbar-brand ps-3" href="index.php">SMS</a>

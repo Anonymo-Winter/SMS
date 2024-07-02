@@ -159,7 +159,6 @@
                     class_id: $("#sclass").val()
                 },
                 success: function (data) {
-                    alert(data);
                     if($("#type").val() == "overall"){
                             loadFull();
                     }else{

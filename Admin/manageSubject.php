@@ -13,7 +13,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <?php include './include/linker.php' ?>
+    <?php include '../include/linker.php' ?>
 </head>
 <body class="sb-nav-fixed">
     <!-- navbar -->

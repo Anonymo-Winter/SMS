@@ -73,6 +73,9 @@
                                     </div>
                                 </div>
                             </form>
+                            <div class="d-flex mt-2">
+                                <input class="btn btn-primary mx-auto" type="submit" id="sub-btn" value="submit">
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -121,15 +124,11 @@
             liveToast.show();
         } 
         
-        $("#tdate").on("change",function(){
-            $(".date").text($("#tdate").val())
-            checkexist();
-        });
-        
-        $("#sclass,#scourse").on("change",function(e){
+        $("#sub-btn").on("click",function(){
             if($("#scourse").val().trim() != "" && $("#sclass").val().trim() != ""){
-                $(".showme").show();
+                $(".date").text($("#tdate").val())
                 checkexist();
+                $(".showme").show();
             }
             else{
                 $(".showme").hide();

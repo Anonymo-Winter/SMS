@@ -6,20 +6,26 @@
         if (empty($uname) && empty($upass)){
             echo 0;
         } else{
-            $sql = "SELECT * FROM  `teachers` WHERE user_name = ? AND password = ?";
+            $sql = "SELECT * FROM  `teachers` WHERE user_name = ?";
             $stmt = mysqli_prepare($conn, $sql);
-            $stmt->bind_param("ss", $uname, $upass);    
+            $stmt->bind_param("s", $uname);
             if ($stmt->execute()) {
                 $result = $stmt->get_result();
                 if ($result->num_rows == 1) {
                     $result = $result->fetch_assoc();
-                    session_start();
-                    $_SESSION["teacher_loggedin"] = true;
-                    $_SESSION["username"] = htmlspecialchars($result["tname"]);    
-                    $_SESSION["teacher_id"] = htmlspecialchars($result["id"]); 
-                    echo 1;
+                    if(password_verify($upass,$result['password']))
+                    {
+                        session_start();
+                        $_SESSION["teacher_loggedin"] = true;
+                        $_SESSION["username"] = htmlspecialchars($result["tname"]);    
+                        $_SESSION["teacher_id"] = htmlspecialchars($result["id"]); 
+                        echo 1;
+                    }
+                    else{
+                        echo "Invalid username or password";
+                    }
                 } else {
-                    echo 'Failed to fetch data. try again later!';
+                    echo "Invalid username or password";
                 }
             } else {
                 echo "Something went wrong. Please try again later!";
